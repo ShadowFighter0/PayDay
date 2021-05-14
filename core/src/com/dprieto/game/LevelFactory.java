@@ -26,12 +26,12 @@ public class LevelFactory {
     {
         switch (index)
         {
+            case 0:
+                //Main Menu cuantos jugadores van a jugar?
             case 1:
 
-
-                return new Level(
-
-                );
+                //Tablero con fichas cartas de to do
+                return new Level(                );
         }
         return null;
     }

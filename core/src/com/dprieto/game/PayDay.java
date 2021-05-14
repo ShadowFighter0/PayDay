@@ -20,6 +20,8 @@ public class PayDay extends ApplicationAdapter {
 	{
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
+		AssetManager.getInstance();
+
 
 		levelFactory = LevelFactory.getInstance();
 		level = LevelFactory.instance.getLevel(1);

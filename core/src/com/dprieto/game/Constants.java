@@ -15,6 +15,8 @@ public class Constants {
 
     }
 
+    enum EventType {EarnMoney, PlayersEarnMoney, PlayerLoseMoney, DeleteBargain };
+
     public static Constants getInstance()
     {
         if (instance == null)

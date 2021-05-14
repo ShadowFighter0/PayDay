@@ -2,18 +2,23 @@ package com.dprieto.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
+
 
 public class Level {
 
     CameraHelper cameraHelper;
     BitmapFont font;
+    FileReader reader;
+
+    ArrayList<MailCard> mailCards;
+    ArrayList<BargainCard> bargainCards;
+    ArrayList<EventCard> eventCards;
+
+
 
 
     public Level()
@@ -24,6 +29,12 @@ public class Level {
         font = new BitmapFont(Gdx.files.internal("Fonts/Font.fnt"));
         font.setColor(Color.BLACK);
 
+        mailCards = new ArrayList<MailCard>();
+        bargainCards = new ArrayList<BargainCard>();
+        eventCards = new ArrayList<EventCard>();
+
+        reader = new FileReader(this);
+        reader.LoadXML();
 
     }
 
