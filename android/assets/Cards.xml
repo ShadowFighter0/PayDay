@@ -23,29 +23,29 @@
 		<card id = "1">
 			<name>Name</name>
 			<description>A pagar por putisimo payaso</description>
-			<amount> -1000 </amount>
-			<type> EarnMoney</type>
+			<amount>-1000 </amount>
+			<type>EarnMoney</type>
 		</card>
 
 		<card id = "2">
 			<name>Name</name>
 			<description>A pagar por putisimo payaso</description>
-			<amount> -1000 </amount>
-			<type> PlayersEarnMoney </type>
+			<amount>-1000 </amount>
+			<type>PlayersEarnMoney </type>
 		</card>
 
 		<card id = "3">
 			<name>Name</name>
 			<description>A pagar por putisimo payaso</description>
-			<amount> -1000 </amount>
-			<type> PlayerLoseMoney</type>
+			<amount>-1000 </amount>
+			<type>PlayerLoseMoney</type>
 		</card>
 
 		<card id = "4">
 			<name>Name</name>
 			<description>A pagar por putisimo payaso</description>
-			<amount> -1000 </amount>
-			<type> DeleteBargain</type>
+			<amount>-1000 </amount>
+			<type>StealBargain</type>
 		</card>
 
 	</event>

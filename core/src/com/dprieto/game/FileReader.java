@@ -68,8 +68,8 @@ public class FileReader {
                     case "PlayerLoseMoney":
                         type = Constants.EventType.PlayerLoseMoney;
                         break;
-                    case "DeleteBargain":
-                        type = Constants.EventType.DeleteBargain;
+                    case "StealBargain":
+                        type = Constants.EventType.StealBargain;
                         break;
                 }
                 Gdx.app.debug("Event " + j, "name: " + name + " description: " + description + " amount: " + amount + " Type: " + type);

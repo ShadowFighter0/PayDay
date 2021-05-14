@@ -53,7 +53,7 @@ public class AssetManager {
         region = new TextureRegion(texture, 380, 280, 190, 140);
         textures.put("BlueBack",region);
 
-        texture = new Texture(Gdx.files.internal("Cards/PlayerCards.png"));
+        texture = new Texture(Gdx.files.internal("Cards/PlayerCard.png"));
         region = new TextureRegion(texture, 0, 0, 64, 64);
         textures.put("PlayerCard",region);
 
@@ -98,7 +98,7 @@ public class AssetManager {
         //Map
         texture = new Texture(Gdx.files.internal("Maps/ProvisionalMap.png"));
         region = new TextureRegion(texture, 0, 0, 1000, 1000);
-        textures.put("YellowPiece",region);
+        textures.put("ProvisionalMap",region);
 
     }
 }

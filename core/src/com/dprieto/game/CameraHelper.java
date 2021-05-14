@@ -25,7 +25,7 @@ public class CameraHelper {
     float maxZoom = 1;
     float minZoom = 0.40f;
 
-    CameraHelper(float worldWidth, float worldHeight)
+    CameraHelper(float posX, float posY, float worldWidth, float worldHeight)
     {
         this.worldWidth = worldWidth;
         this.worldHeight = worldHeight;
@@ -40,7 +40,8 @@ public class CameraHelper {
 
         currentZoom = maxZoom;
 
-        position = new Vector2(currentWidth/2,currentHeight/2);
+        position = new Vector2(posX, posY);
+
         camera.position.set(position.x,position.y,0);
 
         camera.update();
@@ -48,8 +49,8 @@ public class CameraHelper {
 
     public void update()
     {
-        position.x = MathUtils.clamp(position.x, (currentWidth/2), worldWidth - (currentWidth/2));
-        position.y = MathUtils.clamp(position.y, (currentHeight/2), worldHeight - (currentHeight/2));
+        //position.x = MathUtils.clamp(position.x, (currentWidth/2), worldWidth - (currentWidth/2));
+        //position.y = MathUtils.clamp(position.y, (currentHeight/2), worldHeight - (currentHeight/2));
 
         camera.position.set(position.x,position.y, 0);
 

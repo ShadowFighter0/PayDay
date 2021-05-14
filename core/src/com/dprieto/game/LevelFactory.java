@@ -31,7 +31,7 @@ public class LevelFactory {
             case 1:
 
                 //Tablero con fichas cartas de to do
-                return new Level(                );
+                return new Level(    4         );
         }
         return null;
     }
