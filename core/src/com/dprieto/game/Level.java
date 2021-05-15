@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 
-import javax.xml.soap.Text;
 import java.util.ArrayList;
 
 
@@ -15,6 +15,7 @@ public class Level {
     CameraHelper cameraHelper;
     BitmapFont font;
     FileReader reader;
+    Dice dice;
 
     ArrayList<MailCard> mailCards;
     ArrayList<BargainCard> bargainCards;
@@ -25,13 +26,16 @@ public class Level {
     TextureRegion map;
     ArrayList<Player> players;
 
-    public Level(int playersNum)
+    int currentPlayerIndex;
+
+    public Level (int playersNum, ArrayList<TableSquare> tableSquares, int initialMoney)
     {
+
         map = AssetManager.getInstance().getTexture("ProvisionalMap");
+        this.tableSquares = tableSquares;
 
-        //Camera stuff
-        cameraHelper = new CameraHelper(map.getRegionWidth()/2,map.getRegionHeight()/2,1500,1000); //map.getWidth(),map.getHeight());
-
+        cameraHelper = new CameraHelper(map.getRegionWidth()/2,map.getRegionHeight()/2, map.getRegionWidth() + 500, map.getRegionHeight());
+        dice = new Dice(this, new Vector2(500,2*cameraHelper.worldHeight/3));
         font = new BitmapFont(Gdx.files.internal("Fonts/Font.fnt"));
         font.setColor(Color.BLACK);
 
@@ -43,23 +47,39 @@ public class Level {
         reader = new FileReader(this);
         reader.LoadXML();
 
-
+        for (int i = 0; i < playersNum; i++)
+        {
+            players.add(new Player(i,initialMoney));
+        }
 
     }
 
     public void update(float delta)
     {
+        //Show Things
+        //Select Things
+        //Do The thing
+        //End Turn
+
         cameraHelper.update();
+    }
+
+    void ShowOptions()
+    {
+        dice.setActive(true);
+        //View Events
+        //View Cards
     }
 
     public void render(SpriteBatch batch)
     {
         batch.draw(map, 0, 0);
+        dice.render(batch);
 
-        //font.getData().setScale(cameraHelper.currentZoom);
-        //font.draw(batch,
-        //        "",
-        //        cameraHelper.position.x + cameraHelper.currentWidth/2 - (100 * cameraHelper.currentZoom),
-        //        cameraHelper.position.y + (cameraHelper.currentHeight/2));
+        for(int i = 0; i < players.size(); i++)
+        {
+            players.get(i).render(batch);
+        }
+
     }
 }

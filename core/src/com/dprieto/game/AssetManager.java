@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class AssetManager {
 
-    public static AssetManager instance;
+    static AssetManager instance;
 
     HashMap<String,TextureRegion> textures;
 

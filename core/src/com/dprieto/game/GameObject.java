@@ -1,6 +1,7 @@
 package com.dprieto.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class GameObject {
@@ -31,6 +32,7 @@ public abstract class GameObject {
     public void setActive(boolean isActive) {this.isActive = isActive;}
     public boolean isActive() {return isActive;}
     public Vector2 position(){return position;}
+    public void setDimension(TextureRegion textureRegion){dimension.x = textureRegion.getRegionWidth(); dimension.y = textureRegion.getRegionHeight();}
     public Vector2 getDimension(){return dimension;}
 
     public boolean checkClicked(Vector2 point)
