@@ -26,7 +26,10 @@ public class Level {
     TextureRegion map;
     ArrayList<Player> players;
 
-    int currentPlayerIndex;
+    int currentPlayerIndex = 0;
+    int movement = 0;
+
+    boolean turnEnded = true;
 
     public Level (int playersNum, ArrayList<TableSquare> tableSquares, int initialMoney)
     {
@@ -36,6 +39,7 @@ public class Level {
 
         cameraHelper = new CameraHelper(map.getRegionWidth()/2,map.getRegionHeight()/2, map.getRegionWidth() + 500, map.getRegionHeight());
         dice = new Dice(this, new Vector2(500,2*cameraHelper.worldHeight/3));
+
         font = new BitmapFont(Gdx.files.internal("Fonts/Font.fnt"));
         font.setColor(Color.BLACK);
 
@@ -47,39 +51,119 @@ public class Level {
         reader = new FileReader(this);
         reader.LoadXML();
 
-        for (int i = 0; i < playersNum; i++)
+        for (int i = 1; i <= playersNum; i++)
         {
-            players.add(new Player(i,initialMoney));
+            players.add(new Player(i, initialMoney,new Vector2(3*cameraHelper.worldWidth/4, ( i * 200)), tableSquares.get(0).position, this));
         }
+
+        dice.setActive(true);
 
     }
 
     public void update(float delta)
     {
-        //Show Things
-        //Select Things
-        //Do The thing
-        //End Turn
+        //NewPlayer => Show Options
+        if (turnEnded)
+        {
+            ShowOptions();
+        }
+        //Update dice in order to get the number
+        if (dice.isActive())
+        {
+            dice.update(delta);
+        }
+        else
+        {
+            //we have the movement
+            if (movement > 0)
+            {
+                //Move Lerped to next square
+                if (!players.get(currentPlayerIndex).inMovement)
+                {
+                    players.get(currentPlayerIndex).MoveTo(tableSquares.get(players.get(currentPlayerIndex).currentSquare + 1).position);
+                }
+                else
+                {
+                    players.get(currentPlayerIndex).update(delta);
+                }
+            }
+            else if (movement == 0)
+            {
+                switch (tableSquares.get(players.get(currentPlayerIndex).currentSquare).type)
+                {
+                    case Mail:
+                        MailCard mail = mailCards.remove(0);
+                        players.get(currentPlayerIndex).mailcards.add(mail);
+                        mailCards.add(mail);
+                        break;
+
+                    case Event:
+                        EventCard event = eventCards.remove(0);
+                        players.get(currentPlayerIndex).events.add(event);
+                        eventCards.add(event);
+                        break;
+
+                    case Bargain:
+                        BargainCard bargainCard = bargainCards.remove(0);
+                        players.get(currentPlayerIndex).bargains.add(bargainCard);
+                        bargainCards.add(bargainCard);
+                        break;
+
+                    case Lottery:
+
+                        break;
+                    case StartMonth:
+
+                        int amount = 0;
+
+                        for (int i = 0; i < players.get(currentPlayerIndex).mailcards.size(); i++)
+                        {
+                            amount += players.get(currentPlayerIndex).mailcards.get(i).amount;
+                        }
+
+                        players.get(currentPlayerIndex).money -= amount;
+
+                        if (players.get(currentPlayerIndex).money < 0)
+                        {
+                            Gdx.app.debug("Player" + currentPlayerIndex +1, "has been defeated");
+                        }
+
+                        break;
+                }
+                turnEnded = true;
+
+                currentPlayerIndex++;
+                currentPlayerIndex %= players.size();
+            }
+        }
 
         cameraHelper.update();
+    }
+
+    public void OnPlayerArrived()
+    {
+        movement--;
     }
 
     void ShowOptions()
     {
         dice.setActive(true);
+        dice.Reset();
         //View Events
         //View Cards
+
+        turnEnded = false;
     }
 
     public void render(SpriteBatch batch)
     {
         batch.draw(map, 0, 0);
-        dice.render(batch);
 
         for(int i = 0; i < players.size(); i++)
         {
             players.get(i).render(batch);
         }
 
+        dice.render(batch);
     }
 }

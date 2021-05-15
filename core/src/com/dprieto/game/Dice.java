@@ -13,15 +13,18 @@ public class Dice extends GameObject{
 
     ArrayList<TextureRegion> diceTextures;
 
-    int number;
+    int number = 1; //number between 1 and 6
 
-    float secsUntilResult = 5f;
+    float secsUntilResult = 2f;
     float currentSecsUntilResult;
-    float secsChangeTexture = 0.5f;
+    float secsChangeTexture = 0.1f;
     float currentSecsChangeTexture;
+    float secsUntilTurnOff = 1f;
+    float currentSecsUntilTurnOff;
 
-    boolean throwed = true;
+    boolean throwed = false;
     boolean inAnimation = false;
+
 
     Level level;
 
@@ -39,18 +42,22 @@ public class Dice extends GameObject{
         }
         Gdx.app.debug(diceTextures.size() + "", "");
 
-        dimension.x = diceTextures.get(0).getRegionWidth();
-        dimension.y = diceTextures.get(0).getRegionHeight();
+        setDimension(diceTextures.get(0));
 
-        setActive(false);
+        setActive(true);
     }
 
     void ThrowDice()
     {
         throwed = true;
         inAnimation = true;
+    }
+
+    void Reset()
+    {
         currentSecsUntilResult = secsUntilResult;
         currentSecsChangeTexture = secsChangeTexture;
+        currentSecsUntilTurnOff = secsUntilTurnOff;
     }
 
     @Override
@@ -60,48 +67,70 @@ public class Dice extends GameObject{
         {
             if (inAnimation)
             {
-                if (currentSecsUntilResult <= 0)
-                {
-                    inAnimation = false;
-                }
-                else
-                {
-                    currentSecsChangeTexture -= delta;
-
-                    if (currentSecsChangeTexture <= 0)
-                    {
-                        currentSecsChangeTexture = secsChangeTexture;
-                        number = MathUtils.random(1,6);
-                    }
-                    else
-                    {
-                        currentSecsChangeTexture -= delta;
-                    }
-                }
+                DoDiceAnimation(delta);
             }
             else
             {
+                DiceResult(delta);
+            }
+        }
+    }
 
+    private void DiceResult(float delta) {
+
+        currentSecsUntilTurnOff-= delta;
+
+        if (currentSecsUntilTurnOff <= 0)
+        {
+            throwed = false;
+            setActive(false);
+            level.movement = number;
+        }
+    }
+
+    private void DoDiceAnimation(float delta) {
+
+        if (currentSecsUntilResult <= 0)
+        {
+            inAnimation = false;
+        }
+        else
+        {
+            currentSecsUntilResult -= delta;
+
+            if (currentSecsChangeTexture <= 0)
+            {
+                currentSecsChangeTexture = secsChangeTexture;
+                number = MathUtils.random(1,6);
+            }
+            else
+            {
+                currentSecsChangeTexture -= delta;
             }
         }
     }
 
     @Override
     public void render(SpriteBatch batch) {
-        Gdx.app.debug("OJO", "" + position + " " + dimension);
-        batch.draw(diceTextures.get(number),position.x - dimension.x/2, position.y - dimension.y/2);
+        //Gdx.app.debug("OJO", "" + position + " " + dimension);
+
 
         if (isActive())
         {
             if (throwed)
             {
-
+                batch.draw(diceTextures.get(number-1),position.x - dimension.x/2, position.y - dimension.y/2);
+            }
+            else
+            {
+                batch.draw(diceTextures.get(0),position.x - dimension.x/2, position.y - dimension.y/2);
             }
         }
     }
 
     @Override
     public void OnClicked() {
+
         ThrowDice();
     }
 

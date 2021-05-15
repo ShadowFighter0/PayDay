@@ -81,19 +81,19 @@ public class AssetManager {
         //Blue
         texture = new Texture(Gdx.files.internal("Pieces/BluePiece.png"));
         region = new TextureRegion(texture, 0, 0, 64, 64);
-        textures.put("BluePiece",region);
+        textures.put("Piece1",region);
         //Red
         texture = new Texture(Gdx.files.internal("Pieces/RedPiece.png"));
         region = new TextureRegion(texture, 0, 0, 68, 68);
-        textures.put("RedPiece",region);
+        textures.put("Piece2",region);
         //Green
         texture = new Texture(Gdx.files.internal("Pieces/GreenPiece.png"));
         region = new TextureRegion(texture, 0, 0, 68, 68);
-        textures.put("GreenPiece",region);
+        textures.put("Piece3",region);
         //Yellow
         texture = new Texture(Gdx.files.internal("Pieces/YellowPiece.png"));
         region = new TextureRegion(texture, 0, 0, 68, 68);
-        textures.put("YellowPiece",region);
+        textures.put("Piece4",region);
 
         //Map
         texture = new Texture(Gdx.files.internal("Maps/ProvisionalMap.png"));

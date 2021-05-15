@@ -1,5 +1,6 @@
 package com.dprieto.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -46,6 +47,10 @@ public class InputManagerDesktop implements InputProcessor {
 
         boolean clicked = false;
 
+        if (level.dice.isActive())
+        {
+            clicked = level.dice.checkClicked(point);
+        }
 
         return false;
 
