@@ -29,8 +29,6 @@ public class Level {
 
     int currentPlayerIndex = 0;
     int movement = 0;
-    float secsUntilTurnOf = 5f;
-    float currentSecsUntilTurnOff;
 
     boolean turnEnded = true;
     boolean cardAnimation = false;
@@ -63,7 +61,6 @@ public class Level {
 
         dice.setActive(true);
 
-        currentSecsUntilTurnOff = secsUntilTurnOf;
     }
 
     public void update(float delta)
@@ -162,6 +159,9 @@ public class Level {
     {
         cardAnimation = false;
         turnEnded = true;
+
+        currentPlayerIndex++;
+        currentPlayerIndex %= players.size();
     }
 
     public void OnPlayerArrived()

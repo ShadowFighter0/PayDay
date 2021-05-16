@@ -13,7 +13,7 @@ public class Card extends GameObject{
 
     TextureRegion visualCard;
 
-    float secsUntilTurnOf = 1f;
+    float secsUntilTurnOf = 10f;
     float currentSecsUntilTurnOff;
 
     Level level;

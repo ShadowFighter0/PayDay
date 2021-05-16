@@ -32,25 +32,25 @@ public class LevelFactory {
             case 1:
                 ArrayList<TableSquare> squares = new ArrayList<TableSquare>();
 
-                squares.add(new TableSquare(0, Constants.SquareType.StartMonth, new Vector2(100, 100)));
-                squares.add(new TableSquare(1, Constants.SquareType.Mail, new Vector2(100, 300)));
-                squares.add(new TableSquare(2, Constants.SquareType.Bargain, new Vector2(100, 500)));
-                squares.add(new TableSquare(3, Constants.SquareType.Lottery, new Vector2(100, 700)));
-                squares.add(new TableSquare(4, Constants.SquareType.Event, new Vector2(100, 900)));
+                squares.add(new TableSquare(Constants.SquareType.StartMonth, new Vector2(100, 100)));
+                squares.add(new TableSquare(Constants.SquareType.Mail, new Vector2(100, 300)));
+                squares.add(new TableSquare(Constants.SquareType.Bargain, new Vector2(100, 500)));
+                squares.add(new TableSquare(Constants.SquareType.Lottery, new Vector2(100, 700)));
+                squares.add(new TableSquare(Constants.SquareType.Event, new Vector2(100, 900)));
 
-                squares.add(new TableSquare(5, Constants.SquareType.Mail, new Vector2(300, 900)));
-                squares.add(new TableSquare(6, Constants.SquareType.Bargain, new Vector2(500, 900)));
-                squares.add(new TableSquare(7, Constants.SquareType.Lottery, new Vector2(700, 900)));
-                squares.add(new TableSquare(8, Constants.SquareType.Event, new Vector2(900, 900)));
+                squares.add(new TableSquare(Constants.SquareType.Mail, new Vector2(300, 900)));
+                squares.add(new TableSquare(Constants.SquareType.Bargain, new Vector2(500, 900)));
+                squares.add(new TableSquare(Constants.SquareType.Lottery, new Vector2(700, 900)));
+                squares.add(new TableSquare(Constants.SquareType.Event, new Vector2(900, 900)));
 
-                squares.add(new TableSquare(9, Constants.SquareType.Mail, new Vector2(900, 700)));
-                squares.add(new TableSquare(10, Constants.SquareType.Bargain, new Vector2(900, 500)));
-                squares.add(new TableSquare(11, Constants.SquareType.Lottery, new Vector2(900, 300)));
-                squares.add(new TableSquare(12, Constants.SquareType.Event, new Vector2(900, 100)));
+                squares.add(new TableSquare(Constants.SquareType.Mail, new Vector2(900, 700)));
+                squares.add(new TableSquare( Constants.SquareType.Bargain, new Vector2(900, 500)));
+                squares.add(new TableSquare( Constants.SquareType.Lottery, new Vector2(900, 300)));
+                squares.add(new TableSquare( Constants.SquareType.Event, new Vector2(900, 100)));
 
-                squares.add(new TableSquare(13, Constants.SquareType.Mail, new Vector2(700, 100)));
-                squares.add(new TableSquare(14, Constants.SquareType.Bargain, new Vector2(500, 100)));
-                squares.add(new TableSquare(15, Constants.SquareType.Lottery, new Vector2(300, 100)));
+                squares.add(new TableSquare( Constants.SquareType.Mail, new Vector2(700, 100)));
+                squares.add(new TableSquare( Constants.SquareType.Bargain, new Vector2(500, 100)));
+                squares.add(new TableSquare( Constants.SquareType.Lottery, new Vector2(300, 100)));
 
 
                 return new Level(4, squares, 1000);
