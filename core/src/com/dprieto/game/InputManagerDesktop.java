@@ -51,6 +51,10 @@ public class InputManagerDesktop implements InputProcessor {
         {
             clicked = level.dice.checkClicked(point);
         }
+        if (level.cardAnimation)
+        {
+            level.cardToDisplay.checkClicked(point);
+        }
 
         return false;
 

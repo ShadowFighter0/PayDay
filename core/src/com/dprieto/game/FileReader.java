@@ -4,9 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.XmlReader;
 
-import javax.swing.text.Element;
-import javax.swing.text.html.parser.Parser;
-
 public class FileReader {
 
     Level level;
@@ -38,7 +35,7 @@ public class FileReader {
                 int amount = Integer.parseInt(card.get("amount"));
 
                 Gdx.app.debug("Mail " + j, "name: " + name + " description: " + description + " amount: " + amount);
-                level.mailCards.add(new MailCard(name, description, amount));
+                level.mailCards.add(new MailCard(name, description, level, amount));
             }
         }
 
@@ -73,7 +70,7 @@ public class FileReader {
                         break;
                 }
                 Gdx.app.debug("Event " + j, "name: " + name + " description: " + description + " amount: " + amount + " Type: " + type);
-                level.eventCards.add(new EventCard(name, description, amount, type));
+                level.eventCards.add(new EventCard(name, description, level, amount, type));
             }
         }
 
@@ -94,7 +91,7 @@ public class FileReader {
                 int sellAmount = Integer.parseInt(card.get("sellAmount"));
 
                 Gdx.app.debug("Bargain " + j, "name: " + name + " description: " + description + " buy amount: " + buyAmount + " sell amount: " + sellAmount);
-                level.bargainCards.add(new BargainCard(name, description, buyAmount, sellAmount));
+                level.bargainCards.add(new BargainCard(name, description, level, buyAmount, sellAmount));
             }
         }
     }

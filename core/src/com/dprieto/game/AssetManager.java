@@ -41,15 +41,15 @@ public class AssetManager {
        //Load Cards
         Texture texture = new Texture(Gdx.files.internal("Cards/Cards.png"));
         region = new TextureRegion(texture, 0, 0, 190, 140);
-        textures.put("RedFront",region);
+        textures.put("MailCard",region);
         region = new TextureRegion(texture, 380, 0, 190, 140);
         textures.put("RedBack",region);
         region = new TextureRegion(texture, 0, 140, 190, 140);
-        textures.put("GreenFront",region);
+        textures.put("EventCard",region);
         region = new TextureRegion(texture, 0, 280, 190, 140);
         textures.put("GreenBack",region);
         region = new TextureRegion(texture, 380, 140, 190, 140);
-        textures.put("BlueFront",region);
+        textures.put("BargainCard",region);
         region = new TextureRegion(texture, 380, 280, 190, 140);
         textures.put("BlueBack",region);
 

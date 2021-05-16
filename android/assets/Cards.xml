@@ -4,13 +4,15 @@
 
 		<card id = "1">
 			<name>Paco</name>
-			<description>A pagar por putisimo payaso</description>
+			<description>A pagar por putisimo
+				payaso</description>
 			<amount> -1000 </amount>
 		</card>
 
 		<card id = "2">
 			<name>Petete</name>
-			<description>A pagar por putisimo payaso</description>
+			<description>A pagar por putisimo
+				payaso</description>
 			<amount> -1000 </amount>
 		</card>
 
@@ -22,28 +24,32 @@
 
 		<card id = "1">
 			<name>Name</name>
-			<description>A pagar por putisimo payaso</description>
+			<description>A pagar por putisimo
+				payaso</description>
 			<amount>-1000 </amount>
 			<type>EarnMoney</type>
 		</card>
 
 		<card id = "2">
 			<name>Name</name>
-			<description>A pagar por putisimo payaso</description>
+			<description>A pagar por putisimo
+				payaso</description>
 			<amount>-1000 </amount>
 			<type>PlayersEarnMoney </type>
 		</card>
 
 		<card id = "3">
 			<name>Name</name>
-			<description>A pagar por putisimo payaso</description>
+			<description>A pagar por putisimo
+				payaso</description>
 			<amount>-1000 </amount>
 			<type>PlayerLoseMoney</type>
 		</card>
 
 		<card id = "4">
 			<name>Name</name>
-			<description>A pagar por putisimo payaso</description>
+			<description>A pagar por putisimo
+				payaso</description>
 			<amount>-1000 </amount>
 			<type>StealBargain</type>
 		</card>
@@ -56,7 +62,8 @@
 
 		<card id = "1">
 			<name> Name </name>
-			<description> A pagar por putisimo payaso </description>
+			<description> A pagar por putisimo
+				payaso </description>
 			<buyAmount> -1000 </buyAmount>
 			<sellAmount> 1000 </sellAmount>
 		</card>
