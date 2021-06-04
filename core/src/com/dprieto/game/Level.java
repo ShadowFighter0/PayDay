@@ -23,6 +23,7 @@ public class Level {
     Dice dice;
     ArrayList<HUDButton> cardsButtons;
     ArrayList<HUDButton> mainButtons;
+    ArrayList<HUDText> texts;
 
     //Arrays
     ArrayList<MailCard> mailCards;
@@ -74,12 +75,15 @@ public class Level {
 
     void CreateHUD()
     {
+        font = new BitmapFont(Gdx.files.internal("Fonts/Font.fnt"));
+        font.setColor(Color.BLACK);
+
         dice = new Dice(this, new Vector2(500,2 * tableCamera.currentHeight/3));
         dice.setActive(true);
 
-
         mainButtons = new ArrayList<HUDButton>();
         cardsButtons = new ArrayList<HUDButton>();
+        texts = new ArrayList<HUDText>();
 
         cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( 0,0), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.MailLeft, this, cardsCamera));
@@ -90,15 +94,15 @@ public class Level {
         cardsButtons.add(new HUDButton("ArrowRight", new Vector2( 0,0), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.BargainRight, this, cardsCamera));
 
-        mainButtons.add(new HUDButton("EventCard", new Vector2( -100,-50), new Vector2( 0.5f, 0.5f),
+        mainButtons.add(new HUDButton("EventCard", new Vector2( -150,-50), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.EventCard, this, tableCamera));
         mainButtons.add(new HUDButton("MailCard", new Vector2( 100,-50), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.ShowCard, this, tableCamera));
 
-
-
-        font = new BitmapFont(Gdx.files.internal("Fonts/Font.fnt"));
-        font.setColor(Color.BLACK);
+        texts.add(new HUDText(new Vector2(-150, -100), HUDElement.Anchor.MiddleScreen, font, tableCamera));
+        texts.get(0).setText("Events");
+        texts.add(new HUDText(new Vector2(100, -100), HUDElement.Anchor.MiddleScreen, font, tableCamera));
+        texts.get(1).setText("My Cards");
     }
 
     public void update(float delta)
@@ -178,6 +182,7 @@ public class Level {
 
                 turnEnded = true;
                 break;
+
             case StartMonth:
 
                 int mailAmount = 0;
@@ -244,6 +249,10 @@ public class Level {
         for (int i = 0; i < mainButtons.size(); i++)
         {
             mainButtons.get(i).render(batch);
+        }
+        for (int i = 0; i < texts.size(); i++)
+        {
+            texts.get(i).render(batch);
         }
 
         if (cardAnimation)
