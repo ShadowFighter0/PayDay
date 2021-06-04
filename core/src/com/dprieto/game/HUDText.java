@@ -9,15 +9,15 @@ public class HUDText extends HUDElement{
     BitmapFont font;
     String text;
 
-    public HUDText(String imageName, Vector2 position, Anchor anchor, BitmapFont font, Camera camera) {
-        super(imageName, position, anchor, camera);
+    public HUDText(Vector2 position, Anchor anchor, BitmapFont font, Camera camera) {
+        this.offsetPosition = position;
+        this.myAnchor = anchor;
+        this.camera = camera;
         this.font = font;
     }
 
     @Override
     public void render(SpriteBatch batch) {
-        super.render(batch);
-
         font.draw(batch,
                 "" + text,
                 currentPosition.x +  dimension.x ,

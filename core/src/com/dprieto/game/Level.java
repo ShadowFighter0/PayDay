@@ -40,6 +40,9 @@ public class Level {
 
     boolean turnEnded = true;
     boolean cardAnimation = false;
+    boolean showCards = false;
+    boolean showEvents = false;
+
 
     public Level (int playersNum, ArrayList<TableSquare> tableSquares, int initialMoney)
     {
@@ -192,6 +195,8 @@ public class Level {
                 //Display bargain
 
 
+
+                //
                 players.get(currentPlayerIndex).money -= mailAmount;
 
                 if (players.get(currentPlayerIndex).money < 0)
@@ -250,9 +255,17 @@ public class Level {
 
     public void cardsRender (SpriteBatch batch)
     {
-        for (int i = 0; i < cardsButtons.size(); i++)
+        if (showCards)
         {
-            cardsButtons.get(i).render(batch);
+            for (int i = 0; i < cardsButtons.size(); i++)
+            {
+                cardsButtons.get(i).render(batch);
+            }
         }
+        else if (showEvents)
+        {
+
+        }
+
     }
 }

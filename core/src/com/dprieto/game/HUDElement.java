@@ -21,6 +21,11 @@ public class HUDElement {
     Camera camera;
     boolean isActive;
 
+
+    public HUDElement()
+    {
+
+    }
     public HUDElement(String imageName, Vector2 position, Anchor anchor, Camera camera)
     {
         this.name = imageName;
