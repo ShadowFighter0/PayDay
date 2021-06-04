@@ -94,15 +94,17 @@ public class Level {
         cardsButtons.add(new HUDButton("ArrowRight", new Vector2( 0,0), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.BargainRight, this, cardsCamera));
 
-        mainButtons.add(new HUDButton("EventCard", new Vector2( -150,-50), new Vector2( 0.5f, 0.5f),
+        mainButtons.add(new HUDButton("EventCard", new Vector2( -300,-50), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.EventCard, this, tableCamera));
-        mainButtons.add(new HUDButton("MailCard", new Vector2( 100,-50), new Vector2( 0.5f, 0.5f),
+        mainButtons.add(new HUDButton("MailCard", new Vector2( 20,-50), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.ShowCard, this, tableCamera));
 
-        texts.add(new HUDText(new Vector2(-150, -100), HUDElement.Anchor.MiddleScreen, font, tableCamera));
+        texts.add(new HUDText(new Vector2(-350, -100), HUDElement.Anchor.MiddleScreen, font, tableCamera));
         texts.get(0).setText("Events");
-        texts.add(new HUDText(new Vector2(100, -100), HUDElement.Anchor.MiddleScreen, font, tableCamera));
+        texts.add(new HUDText(new Vector2(-50, -100), HUDElement.Anchor.MiddleScreen, font, tableCamera));
         texts.get(1).setText("My Cards");
+        texts.add(new HUDText(new Vector2(-170, 130), HUDElement.Anchor.MiddleScreen, font, tableCamera));
+        texts.get(2).setText("Dice");
     }
 
     public void update(float delta)
