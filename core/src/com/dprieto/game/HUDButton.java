@@ -11,7 +11,7 @@ public class HUDButton extends HUDElement{
     ButtonType type;
 
     Level level;
-    HUDText text;
+    HUDText text = null;
 
     public HUDButton (String imageName, Vector2 position, Anchor anchor, ButtonType buttonType, Level level, Camera camera) {
         super(imageName, position, anchor, camera);
@@ -20,8 +20,17 @@ public class HUDButton extends HUDElement{
         this.level = level;
     }
 
+    public HUDButton (String imageName, Vector2 position, Vector2 dimensionModifier, Anchor anchor, ButtonType buttonType, Level level, Camera camera, String content, BitmapFont font) {
+        super(imageName, position, dimensionModifier, anchor, camera );
+
+        this.type = buttonType;
+        this.level = level;
+
+        this.text = new HUDText(position, anchor, font, camera);
+        this.text.setText(content);
+    }
     public HUDButton (String imageName, Vector2 position, Vector2 dimensionModifier, Anchor anchor, ButtonType buttonType, Level level, Camera camera) {
-        super(imageName, position, dimensionModifier, anchor, camera);
+        super(imageName, position, dimensionModifier, anchor, camera );
 
         this.type = buttonType;
         this.level = level;
