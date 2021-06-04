@@ -1,6 +1,7 @@
 package com.dprieto.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
@@ -26,13 +27,19 @@ public class HUDButton extends HUDElement{
         this.level = level;
     }
 
-    public HUDButton (String imageName, Vector2 position, Anchor anchor, Camera camera, String text) {
+    public HUDButton (String imageName, Vector2 position, Anchor anchor, Camera camera, String content, BitmapFont font) {
         super(imageName, position, anchor, camera);
+        this.text = new HUDText(position, anchor, font, camera);
+        this.text.setText(content);
     }
 
     @Override
     public void render (SpriteBatch batch) {
         super.render(batch);
+        if(text != null)
+        {
+            text.render(batch);
+        }
    }
 
     public boolean checkClicked (Vector2 point) {

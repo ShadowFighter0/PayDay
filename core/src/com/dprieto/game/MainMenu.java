@@ -2,7 +2,9 @@ package com.dprieto.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -14,25 +16,31 @@ public class MainMenu implements Screen {
   HUDButton start;
   HUDButton quit;
   HUDText title;
+
+  BitmapFont font;
   public MainMenu()
   {
     batch = new SpriteBatch();
     camera = new Camera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-    start = new HUDButton("button", new Vector2(0, 100), HUDElement.Anchor.MiddleScreen, this.camera, "START"){
+    font = new BitmapFont();
+    font.setColor(Color.WHITE);
+
+    start = new HUDButton("button", new Vector2(0, 100), HUDElement.Anchor.MiddleScreen, this.camera, "START", font){
       @Override
       public void OnClicked() {
         Gdx.app.log("asd", "asdasds");
         PayDay.instance.setScreen(new GameScreen());
       }
     };
-    quit = new HUDButton("button", new Vector2(0, 0), HUDElement.Anchor.MiddleScreen, this.camera, "QUIT"){
+    quit = new HUDButton("button", new Vector2(0, 0), HUDElement.Anchor.MiddleScreen, this.camera, "QUIT", font){
       @Override
       public void OnClicked() {
         Gdx.app.exit();
       }
     };
-//    title = new HUDText()
+    title = new HUDText(new Vector2(0, 200), HUDElement.Anchor.MiddleScreen, font, camera);
+    title.setText("PAY DAY");
   }
   @Override
   public void show() {
@@ -56,6 +64,7 @@ public class MainMenu implements Screen {
 
     batch.begin();
     batch.setProjectionMatrix(camera.orthographicCamera.combined);
+    title.render(batch);
     start.render(batch);
     quit.render(batch);
 
