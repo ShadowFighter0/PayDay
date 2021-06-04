@@ -107,5 +107,9 @@ public class AssetManager {
         region = new TextureRegion(texture, 955,305,110,155);
         textures.put("ArrowRight", region);
 
+        texture = new Texture(Gdx.files.internal("Menus/button.png"));
+        region = new TextureRegion(texture, 0, 0, 190, 49);
+        textures.put("button", region);
+
     }
 }

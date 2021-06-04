@@ -10,6 +10,7 @@ public class HUDButton extends HUDElement{
     ButtonType type;
 
     Level level;
+    HUDText text;
 
     public HUDButton (String imageName, Vector2 position, Anchor anchor, ButtonType buttonType, Level level, Camera camera) {
         super(imageName, position, anchor, camera);
@@ -23,6 +24,10 @@ public class HUDButton extends HUDElement{
 
         this.type = buttonType;
         this.level = level;
+    }
+
+    public HUDButton (String imageName, Vector2 position, Anchor anchor, Camera camera, String text) {
+        super(imageName, position, anchor, camera);
     }
 
     @Override
