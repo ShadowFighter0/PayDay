@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import java.util.ArrayList;
 
@@ -181,6 +182,14 @@ public class Level {
                 break;
 
             case Lottery:
+                for (int i = 0; i < players.size(); i++) {
+                    if(!players.get(i).equals(currentPlayerIndex) && players.get(i).money >= 100)
+                    {
+                        players.get(i).money -= 100;
+                    }
+                }
+                int rand = MathUtils.random(0, players.size() - 1);
+                players.get(rand).money += 100 * (players.size() - 1);
 
                 turnEnded = true;
                 break;
