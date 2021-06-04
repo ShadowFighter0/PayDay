@@ -23,6 +23,7 @@ public class Dice extends GameObject{
     float currentSecsUntilTurnOff;
 
     boolean throwed = false;
+
     boolean inAnimation = false;
 
 

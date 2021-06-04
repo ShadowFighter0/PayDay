@@ -11,12 +11,20 @@ import java.util.ArrayList;
 
 public class Level {
 
-    CameraHelper cameraHelper;
+    //cameras
+    Camera tableCamera;
+    Camera cardsCamera;
+
     BitmapFont font;
     GlyphLayout layout;
     FileReader reader;
-    Dice dice;
 
+    //Buttons
+    Dice dice;
+    ArrayList<HUDButton> cardsButtons;
+    ArrayList<HUDButton> mainButtons;
+
+    //Arrays
     ArrayList<MailCard> mailCards;
     ArrayList<BargainCard> bargainCards;
     ArrayList<EventCard> eventCards;
@@ -39,12 +47,12 @@ public class Level {
         map = AssetManager.getInstance().getTexture("ProvisionalMap");
         this.tableSquares = tableSquares;
 
-        cameraHelper = new CameraHelper(map.getRegionWidth()/2+125,map.getRegionHeight()/2, map.getRegionWidth() + Constants.EXTRA_HUD, map.getRegionHeight());
-        dice = new Dice(this, new Vector2(500,2*cameraHelper.worldHeight/3));
+        tableCamera = new Camera (map.getRegionWidth() + Constants.EXTRA_HUD, map.getRegionHeight());
+        cardsCamera = new Camera (map.getRegionWidth() + Constants.EXTRA_HUD, map.getRegionHeight());
+
+        CreateHUD();
 
         layout = new GlyphLayout();
-        font = new BitmapFont(Gdx.files.internal("Fonts/Font.fnt"));
-        font.setColor(Color.BLACK);
 
         mailCards = new ArrayList<MailCard>();
         bargainCards = new ArrayList<BargainCard>();
@@ -54,13 +62,40 @@ public class Level {
         reader = new FileReader(this);
         reader.LoadXML();
 
+        //Create Players
         for (int i = 1; i <= playersNum; i++)
         {
-            players.add(new Player(i, initialMoney,new Vector2(map.getRegionWidth() + Constants.EXTRA_HUD/2, ( i * cameraHelper.worldHeight/5)), tableSquares.get(0).position, this));
+            players.add(new Player(i, initialMoney,new Vector2(map.getRegionWidth() + Constants.EXTRA_HUD/2, ( i * tableCamera.viewportHeight/5)), tableSquares.get(0).position, this));
         }
+    }
 
+    void CreateHUD()
+    {
+        dice = new Dice(this, new Vector2(500,2 * tableCamera.currentHeight/3));
         dice.setActive(true);
 
+
+        mainButtons = new ArrayList<HUDButton>();
+        cardsButtons = new ArrayList<HUDButton>();
+
+        cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( 0,0), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.MailLeft, this, cardsCamera));
+        cardsButtons.add(new HUDButton("ArrowRight", new Vector2(0,0), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.MailRight, this, cardsCamera));
+        cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( 0,0), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.BargainLeft, this, cardsCamera));
+        cardsButtons.add(new HUDButton("ArrowRight", new Vector2( 0,0), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.BargainRight, this, cardsCamera));
+
+        mainButtons.add(new HUDButton("EventCard", new Vector2( -100,-50), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.EventCard, this, tableCamera));
+        mainButtons.add(new HUDButton("MailCard", new Vector2( 100,-50), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.ShowCard, this, tableCamera));
+
+
+
+        font = new BitmapFont(Gdx.files.internal("Fonts/Font.fnt"));
+        font.setColor(Color.BLACK);
     }
 
     public void update(float delta)
@@ -94,56 +129,7 @@ public class Level {
                 }
                 else if (movement == 0)
                 {
-                    switch (tableSquares.get(players.get(currentPlayerIndex).currentSquare).type)
-                    {
-                        case Mail:
-                            MailCard mail = mailCards.remove(0);
-                            players.get(currentPlayerIndex).mailcards.add(mail);
-                            mailCards.add(mail);
-
-                            cardToDisplay = mail;
-                            cardAnimation = true;
-                            break;
-
-                        case Event:
-                            EventCard event = eventCards.remove(0);
-                            players.get(currentPlayerIndex).events.add(event);
-                            eventCards.add(event);
-
-                            cardToDisplay = event;
-                            cardAnimation = true;
-                            break;
-
-                        case Bargain:
-                            BargainCard bargainCard = bargainCards.remove(0);
-                            players.get(currentPlayerIndex).bargains.add(bargainCard);
-                            bargainCards.add(bargainCard);
-
-                            cardToDisplay = bargainCard;
-                            cardAnimation = true;
-                            break;
-
-                        case Lottery:
-
-                            break;
-                        case StartMonth:
-
-                            int amount = 0;
-
-                            for (int i = 0; i < players.get(currentPlayerIndex).mailcards.size(); i++)
-                            {
-                                amount += players.get(currentPlayerIndex).mailcards.get(i).amount;
-                            }
-
-                            players.get(currentPlayerIndex).money -= amount;
-
-                            if (players.get(currentPlayerIndex).money < 0)
-                            {
-                                Gdx.app.debug("Player" + currentPlayerIndex +1, "has been defeated");
-                            }
-
-                            break;
-                    }
+                    CardUpdate();
                 }
             }
         }
@@ -152,7 +138,69 @@ public class Level {
             cardToDisplay.update(delta);
         }
 
-        cameraHelper.update();
+        tableCamera.update();
+    }
+
+    private void CardUpdate() {
+        switch (tableSquares.get(players.get(currentPlayerIndex).currentSquare).type)
+        {
+            case Mail:
+                MailCard mail = mailCards.remove(0);
+                players.get(currentPlayerIndex).mailCards.add(mail);
+                mailCards.add(mail);
+
+                cardToDisplay = mail;
+                cardAnimation = true;
+                break;
+
+            case Event:
+                EventCard event = eventCards.remove(0);
+                players.get(currentPlayerIndex).events.add(event);
+                eventCards.add(event);
+
+                cardToDisplay = event;
+                cardAnimation = true;
+                break;
+
+            case Bargain:
+                BargainCard bargainCard = bargainCards.remove(0);
+                players.get(currentPlayerIndex).bargains.add(bargainCard);
+                bargainCards.add(bargainCard);
+
+                cardToDisplay = bargainCard;
+                cardAnimation = true;
+                break;
+
+            case Lottery:
+
+                turnEnded = true;
+                break;
+            case StartMonth:
+
+                int mailAmount = 0;
+                int bargainAmount = 0;
+
+                for (int i = 0; i < players.get(currentPlayerIndex).bargains.size(); i++)
+                {
+                    bargainAmount += players.get(currentPlayerIndex).bargains.get(i).sellAmount;
+                }
+                for (int i = 0; i < players.get(currentPlayerIndex).mailCards.size(); i++)
+                {
+                    mailAmount += players.get(currentPlayerIndex).mailCards.get(i).amount;
+                }
+
+                //Display bargain
+
+
+                players.get(currentPlayerIndex).money -= mailAmount;
+
+                if (players.get(currentPlayerIndex).money < 0)
+                {
+                    Gdx.app.debug("Player" + currentPlayerIndex + 1, "has been defeated");
+                }
+
+                break;
+        }
     }
 
     public void EndCardAnimation()
@@ -179,13 +227,18 @@ public class Level {
         turnEnded = false;
     }
 
-    public void render(SpriteBatch batch)
+    public void tableRender (SpriteBatch batch)
     {
         batch.draw(map, 0, 0);
 
-        for(int i = 0; i < players.size(); i++)
+        for (int i = 0; i < players.size(); i++)
         {
             players.get(i).render(batch);
+        }
+
+        for (int i = 0; i < mainButtons.size(); i++)
+        {
+            mainButtons.get(i).render(batch);
         }
 
         if (cardAnimation)
@@ -193,5 +246,13 @@ public class Level {
 
 
         dice.render(batch);
+    }
+
+    public void cardsRender (SpriteBatch batch)
+    {
+        for (int i = 0; i < cardsButtons.size(); i++)
+        {
+            cardsButtons.get(i).render(batch);
+        }
     }
 }

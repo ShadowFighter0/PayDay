@@ -50,10 +50,12 @@ public class PayDay extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		batch.setProjectionMatrix(level.cameraHelper.camera.combined);
 		batch.begin();
+		batch.setProjectionMatrix(level.tableCamera.orthographicCamera.combined);
+		level.tableRender(batch);
 
-		level.render(batch);
+		batch.setProjectionMatrix(level.tableCamera.orthographicCamera.combined);
+		level.cardsRender(batch);
 
 		batch.end();
 	}
@@ -66,7 +68,8 @@ public class PayDay extends ApplicationAdapter {
 	@Override
 	public void resize(int width, int height)
 	{
-		level.cameraHelper.resize(width,height);;
+		level.tableCamera.FitResize(width,height);
+		level.cardsCamera.FitResize(width,height);
 	}
 
 	@Override

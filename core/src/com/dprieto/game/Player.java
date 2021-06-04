@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class Player extends GameObject{
 
@@ -25,25 +24,28 @@ public class Player extends GameObject{
     Vector2 newTokenPosition;
 
     ArrayList<BargainCard> bargains;
-    ArrayList<MailCard> mailcards;
+    ArrayList<MailCard> mailCards;
     ArrayList<EventCard> events;
 
     TextureRegion playerCardTexture;
     TextureRegion tokenTexture;
 
-    public Player (int numPlayer, int initialMoney, Vector2 cardPosition, Vector2 tokenPosition, Level level)
-    {
+    public Player (int numPlayer, int initialMoney, Vector2 cardPosition, Vector2 tokenPosition, Level level) {
+
         this.level = level;
 
         position = cardPosition.cpy();
         this.tokenPosition = tokenPosition.cpy();
 
         playerCardTexture = AssetManager.getInstance().getTexture("PlayerCard");
+
         setDimension(playerCardTexture);
+        dimension.x *= 4;
+        dimension.y *= 4;
+
         this.numPlayer = numPlayer;
 
-        tokenTexture = AssetManager.getInstance().getTexture("Piece"+numPlayer);
-        Gdx.app.debug("Piece"+numPlayer, "");
+        tokenTexture = AssetManager.getInstance().getTexture("Piece" + numPlayer);
         currentSquare = 0;
 
         tokenDimension = new Vector2(tokenTexture.getRegionWidth(), tokenTexture.getRegionHeight());
@@ -51,12 +53,12 @@ public class Player extends GameObject{
         money = initialMoney;
 
         bargains = new ArrayList<BargainCard>();
-        mailcards = new ArrayList<MailCard>();
+        mailCards = new ArrayList<MailCard>();
         events = new ArrayList<EventCard>();
     }
 
-    public void MoveTo(Vector2 newTokenPosition)
-    {
+    public void MoveTo(Vector2 newTokenPosition) {
+
         this.newTokenPosition = newTokenPosition;
         inMovement = true;
     }
@@ -77,14 +79,12 @@ public class Player extends GameObject{
                 level.OnPlayerArrived();
             }
         }
-        Gdx.app.debug("Player"+numPlayer+"MyPosition", ""+tokenPosition.cpy());
-        Gdx.app.debug("currentSquare", currentSquare+"");
     }
 
     @Override
     public void render(SpriteBatch batch) {
 
-        batch.draw(playerCardTexture, position.x - playerCardTexture.getRegionWidth()/2, position.y - playerCardTexture.getRegionHeight()/2);
+        batch.draw(playerCardTexture, position.x - dimension.x/2, position.y - dimension.y/2, dimension.x, dimension.y);
         batch.draw(tokenTexture, this.tokenPosition.x - tokenDimension.x/2, this.tokenPosition.y - tokenDimension.y/2);
     }
 

@@ -37,7 +37,7 @@ public class InputManagerDesktop implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button)
     {
-        Vector3 pos = level.cameraHelper.camera.unproject(new Vector3(screenX,screenY,0));
+        Vector3 pos = level.tableCamera.orthographicCamera.unproject(new Vector3(screenX,screenY,0));
 
         screenPoint.x = screenX;
         screenPoint.y = screenY;
@@ -57,31 +57,18 @@ public class InputManagerDesktop implements InputProcessor {
         }
 
         return false;
-
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
-        if(isDragging)
-        {
-            isDragging = false;
-        }
 
         return false;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        if(isDragging)
-        {
-            float cameraMovementX = screenX - screenPoint.x;
-            float cameraMovementY = screenY - screenPoint.y;
 
-            level.cameraHelper.moveCamera(- cameraMovementX, cameraMovementY);
-            screenPoint.x = screenX;
-            screenPoint.y = screenY;
-        }
         return false;
     }
 
@@ -92,8 +79,6 @@ public class InputManagerDesktop implements InputProcessor {
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
-
-        level.cameraHelper.changeZoom(amountY);
 
         return false;
     }
