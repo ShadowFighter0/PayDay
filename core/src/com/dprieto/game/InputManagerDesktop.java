@@ -55,6 +55,14 @@ public class InputManagerDesktop implements InputProcessor {
             }
         }
 
+        for (int i = 0; i < level.eventsButtons.size(); i++)
+        {
+            if(!clicked)
+            {
+                clicked = level.eventsButtons.get(i).checkClicked(point);
+            }
+        }
+
         Vector3 pos = level.tableCamera.orthographicCamera.unproject(new Vector3(screenX,screenY,0));
 
 

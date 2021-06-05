@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class HUDButton extends HUDElement{
 
-    enum ButtonType {Quit, ShowEvents, ShowCards, MailLeft, MailRight, ExitShowCard, ExitShowEvents}
+    enum ButtonType {Quit, ShowEvents, EventLeft, EventRight, UseEvent, ExitShowEvents, ShowCards, MailLeft, MailRight, ExitShowCard}
     ButtonType type;
 
     Level level;
@@ -71,14 +71,22 @@ public class HUDButton extends HUDElement{
     public void OnClicked(){
         switch (type)
         {
+            //region ShowCards
+            case ShowCards:
+                level.cardShowed = 0;
+                level.showCards = true;
+                level.showEvents = false;
 
-            case ShowEvents:
-                level.showEvents = true;
-
+                level.ShowCards();
                 break;
 
-            case ShowCards:
-                level.ShowCards();
+            case ExitShowEvents:
+            case ExitShowCard:
+
+                level.showEvents = false;
+                level.showCards = false;
+
+                level.HideShowCards();
                 break;
 
             case MailLeft:
@@ -91,15 +99,37 @@ public class HUDButton extends HUDElement{
                 level.cardShowed++;
                 break;
 
-            case ExitShowCard:
+            //endregion
 
-                level.HideShowCards();
+            //region ShowEvents
+
+            case ShowEvents:
+                level.eventShowed = 0;
+                level.showEvents = true;
+                level.showCards = false;
+
+                level.ShowCards();
+
                 break;
 
-            case ExitShowEvents:
+
+            case EventLeft:
+                level.eventShowed--;
 
                 break;
 
+            case EventRight:
+                level.eventShowed++;
+
+                break;
+
+            case UseEvent:
+                level.UseEvent();
+
+                break;
+
+
+            //endregion
             case Quit:
                 Gdx.app.exit();
                 break;

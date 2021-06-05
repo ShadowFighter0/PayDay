@@ -25,6 +25,7 @@ public class Level {
     //Buttons
     Dice dice;
     ArrayList<HUDButton> cardsButtons;
+    ArrayList<HUDButton> eventsButtons;
     ArrayList<HUDButton> mainButtons;
     ArrayList<HUDText> mainTexts;
     HUDText noCards;
@@ -48,8 +49,11 @@ public class Level {
     boolean cardAnimation = false;
     boolean showCards = false;
     boolean showEvents = false;
+    boolean usingEvent = false;
 
     int cardShowed = 0;
+    int eventShowed = 0;
+    int playerObjective = 0;
 
     public Level (int playersNum, ArrayList<TableSquare> tableSquares, int initialMoney)
     {
@@ -80,8 +84,8 @@ public class Level {
         players.get(currentPlayerIndex).Turn(true);
     }
 
-    void CreateHUD()
-    {
+    void CreateHUD() {
+
         font = new BitmapFont(Gdx.files.internal("Fonts/Font.fnt"));
         font.setColor(Color.BLACK);
 
@@ -91,6 +95,7 @@ public class Level {
         mainButtons = new ArrayList<HUDButton>();
         cardsButtons = new ArrayList<HUDButton>();
         mainTexts = new ArrayList<HUDText>();
+        eventsButtons = new ArrayList<HUDButton>();
 
         //Main Buttons
         mainButtons.add(new HUDButton("EventCard", new Vector2( -300,-50), new Vector2( 0.5f, 0.5f),
@@ -107,7 +112,6 @@ public class Level {
 
         noCards = new HUDText(new Vector2(-170, 0), HUDElement.Anchor.MiddleScreen, font, cardsCamera );
 
-
         //Show Cards
         cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( -400,0), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.MailLeft, this, cardsCamera));
@@ -115,32 +119,38 @@ public class Level {
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.MailRight, this, cardsCamera));
         cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( -375,-250), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.ExitShowCard, this, cardsCamera));
+
+
+        //Events Button
+        eventsButtons.add(new HUDButton("ArrowLeft", new Vector2( -400,0), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.EventLeft, this, cardsCamera));
+        eventsButtons.add(new HUDButton("ArrowRight", new Vector2(125,0), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.EventRight, this, cardsCamera));
+        eventsButtons.add(new HUDButton("ArrowLeft", new Vector2(-375,-250), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.ExitShowEvents, this, cardsCamera));
+        eventsButtons.add(new HUDButton("ArrowLeft", new Vector2(-125,250), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.UseEvent, this, cardsCamera));
+        eventsButtons.get(3).SetRotation(-90);
     }
 
-    public void ShowCards()
-    {
+    public void ShowCards() {
         cardShowed = 0;
-
-        showCards = true;
+        eventShowed = 0;
 
         dice.setActive(false);
 
-        for (int i = 0 ; i < mainButtons.size(); i++)
+        for (int i = 0; i < mainButtons.size(); i++)
         {
             mainButtons.get(i).setActive(false);
         }
+
         for (int i = 0; i < mainTexts.size(); i++)
         {
             mainTexts.get(i).setActive(false);
         }
     }
 
-    public void HideShowCards()
-    {
-        cardShowed = 0;
-
-        showCards = false;
-
+    public void HideShowCards() {
         dice.setActive(true);
 
         for (int i = 0 ; i < mainButtons.size(); i++)
@@ -153,8 +163,14 @@ public class Level {
         }
     }
 
-    public void update(float delta)
+    public void UseEvent()
     {
+        usingEvent = true;
+        players.get(currentPlayerIndex).events.get(eventShowed).use();
+    }
+
+    public void update(float delta) {
+
         if (!cardAnimation)
         {
             //NewPlayer => Show Options
@@ -210,7 +226,7 @@ public class Level {
         tableCamera.update();
     }
 
-    public void DiceEnd(){
+    public void DiceEnd() {
 
         dice.setActive(false);
 
@@ -236,6 +252,7 @@ public class Level {
                 cardAnimation = true;
                 break;
 
+
             case Event:
                 EventCard event = eventCards.remove(0);
                 players.get(currentPlayerIndex).events.add(event);
@@ -245,6 +262,7 @@ public class Level {
                 cardAnimation = true;
                 break;
 
+
             case Bargain:
                 BargainCard bargainCard = bargainCards.remove(0);
                 players.get(currentPlayerIndex).bargains.add(bargainCard);
@@ -253,6 +271,7 @@ public class Level {
                 cardToDisplay = bargainCard;
                 cardAnimation = true;
                 break;
+
 
             case Lottery:
                 for (int i = 0; i < players.size(); i++) {
@@ -269,6 +288,7 @@ public class Level {
 
                 TurnEnd();
                 break;
+
 
             case StartMonth:
 
@@ -349,14 +369,16 @@ public class Level {
         {
             mainButtons.get(i).render(batch);
         }
+
         for (int i = 0; i < mainTexts.size(); i++)
         {
             mainTexts.get(i).render(batch);
         }
 
         if (cardAnimation)
+        {
             cardToDisplay.render(batch);
-
+        }
 
         dice.render(batch);
     }
@@ -398,12 +420,31 @@ public class Level {
             }
 
             cards.get(cardShowed).render(batch);
-
         }
         else if (showEvents)
         {
+            for (int i = 0; i < eventsButtons.size(); i++)
+            {
+                eventsButtons.get(i).render(batch);
+            }
 
+            if (players.get(currentPlayerIndex).events.size() == 0)
+            {
+                noCards.setText("No Cards");
+                noCards.render(batch);
+                return;
+            }
+
+            if (eventShowed < 0)
+            {
+                eventShowed = players.get(currentPlayerIndex).events.size() - 1;
+            }
+            else if (eventShowed == players.get(currentPlayerIndex).events.size())
+            {
+                eventShowed = 0;
+            }
+
+            players.get(currentPlayerIndex).events.get(eventShowed).render(batch);
         }
-
     }
 }

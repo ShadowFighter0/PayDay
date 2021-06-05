@@ -17,6 +17,7 @@ public class HUDElement {
     Vector2 offsetPosition;
     Vector2 currentPosition;
     Vector2 dimension;
+    float rotation = 0;
 
     Camera camera;
     boolean isActive;
@@ -26,6 +27,7 @@ public class HUDElement {
     {
 
     }
+
     public HUDElement(String imageName, Vector2 position, Anchor anchor, Camera camera)
     {
         this.name = imageName;
@@ -66,6 +68,7 @@ public class HUDElement {
         isActive = true;
     }
 
+    public void SetRotation (float rotation){this.rotation = rotation;}
     public void setActive(boolean active) {
         isActive = active;
     }
@@ -96,7 +99,8 @@ public class HUDElement {
             currentPosition.x = anchorPos.x + offsetPosition.x;
             currentPosition.y = anchorPos.y + offsetPosition.y;
 
-            batch.draw(image, anchorPos.x + (offsetPosition.x - dimension.x/2), anchorPos.y + (offsetPosition.y - dimension.y/2), dimension.x, dimension.y);
+            batch.draw(image, currentPosition.x - dimension.x/2, currentPosition.y - dimension.y/2,
+                    dimension.x/2, dimension.y/2, dimension.x, dimension.y,1, 1, rotation);
         }
     }
 }
