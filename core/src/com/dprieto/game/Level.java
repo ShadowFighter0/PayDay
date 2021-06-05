@@ -151,8 +151,8 @@ public class Level {
 
         addPlayerButton = new HUDButton("button", new Vector2(500, 450),
                 HUDElement.Anchor.MiddleScreen, cardsCamera, "Add player", font);
-        startButton = new HUDButton("button", new Vector2(0, 0),
-                HUDElement.Anchor.MiddleScreen, cardsCamera, "Start gamer", font);
+        startButton = new HUDButton("button", new Vector2(-150, -200),
+                HUDElement.Anchor.MiddleScreen, cardsCamera, "Start game", font);
     }
 
     public void ShowCards() {
