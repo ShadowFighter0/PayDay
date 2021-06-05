@@ -265,7 +265,17 @@ public class Level {
 
             case Bargain:
                 BargainCard bargainCard = bargainCards.remove(0);
-                players.get(currentPlayerIndex).bargains.add(bargainCard);
+
+                if (players.get(currentPlayerIndex).mustGiveBargain)
+                {
+                    players.get(currentPlayerIndex).playerToGiveBargain.bargains.add(bargainCard);
+                    players.get(currentPlayerIndex).mustGiveBargain = false;
+                    players.get(currentPlayerIndex).playerToGiveBargain = null;
+                }
+                else
+                {
+                    players.get(currentPlayerIndex).bargains.add(bargainCard);
+                }
                 bargainCards.add(bargainCard);
 
                 cardToDisplay = bargainCard;

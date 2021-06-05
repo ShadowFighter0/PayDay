@@ -17,4 +17,33 @@ public class EventCard extends Card {
 
         this.amount = amount;
     }
+
+    public void Use (Player caster, Player objective)
+    {
+        switch (type)
+        {
+            case EarnMoney:
+
+                caster.money += amount;
+                break;
+
+            case PlayersEarnMoney:
+
+                caster.money += amount;
+                objective.money += amount;
+                break;
+
+            case PlayerLoseMoney:
+
+                objective.money -= amount;
+                caster.money += amount;
+                break;
+
+            case StealBargain:
+
+                objective.MustGiveBargain(caster);
+
+                break;
+        }
+    }
 }

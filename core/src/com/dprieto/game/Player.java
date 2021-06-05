@@ -18,6 +18,9 @@ public class Player extends GameObject{
     Vector2 tokenDimension;
 
     boolean mustGiveBargain;
+    Player playerToGiveBargain;
+
+
     boolean myTurn;
 
     //MovementAnim
@@ -83,6 +86,13 @@ public class Player extends GameObject{
         {
             position.x += 25;
         }
+    }
+
+    public void MustGiveBargain(Player giveTo)
+    {
+        mustGiveBargain = true;
+        playerToGiveBargain = giveTo;
+
     }
 
     @Override
