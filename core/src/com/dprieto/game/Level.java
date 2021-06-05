@@ -55,6 +55,7 @@ public class Level {
     int eventShowed = 0;
     int playerObjective = 0;
 
+    LotteryCard lotteryCard = null;
     public Level (int playersNum, ArrayList<TableSquare> tableSquares, int initialMoney)
     {
 
@@ -82,6 +83,8 @@ public class Level {
             players.add(new Player(i, initialMoney,new Vector2(map.getRegionWidth() + Constants.EXTRA_HUD/2, ( i * tableCamera.viewportHeight/5)), tableSquares.get(0).position, this));
         }
         players.get(currentPlayerIndex).Turn(true);
+
+        lotteryCard = new LotteryCard(this);
     }
 
     void CreateHUD() {
@@ -293,10 +296,11 @@ public class Level {
                 int rand = MathUtils.random(0, players.size() - 1);
                 players.get(rand).money += 100 * (players.size() - 1);
 
-                cardAnimation = false;
-                turnEnded = true;
+                lotteryCard.setDescription("El jugador " + (rand + 1) + " ha ganado " + (100 * (players.size() - 1)) + "!");
+                cardToDisplay = lotteryCard;
+                cardAnimation = true;
 
-                TurnEnd();
+                //TurnEnd();
                 break;
 
 
