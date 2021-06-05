@@ -55,7 +55,12 @@ public class Level {
     int eventShowed = 0;
     int playerObjective = 0;
 
+    HUDButton addPlayerButton;
+    HUDButton startButton;
+    private boolean gameStarted = false;
+
     LotteryCard lotteryCard = null;
+    private int initialMoney = 0;
     public Level (int playersNum, ArrayList<TableSquare> tableSquares, int initialMoney)
     {
 
@@ -78,15 +83,23 @@ public class Level {
         reader.LoadXML();
 
         //Create Players
-        for (int i = 1; i <= playersNum; i++)
-        {
-            players.add(new Player(i, initialMoney,new Vector2(map.getRegionWidth() + Constants.EXTRA_HUD/2, ( i * tableCamera.viewportHeight/5)), tableSquares.get(0).position, this));
-        }
-        players.get(currentPlayerIndex).Turn(true);
+        this.initialMoney = initialMoney;
+//        for (int i = 1; i <= playersNum; i++)
+//        {
+//            players.add(new Player(i, initialMoney,new Vector2(map.getRegionWidth() + Constants.EXTRA_HUD/2, ( i * tableCamera.viewportHeight/5)), tableSquares.get(0).position, this));
+//        }
 
         lotteryCard = new LotteryCard(this);
     }
 
+    private void startGame()
+    {
+        if(players.size() >= 2)
+        {
+            players.get(currentPlayerIndex).Turn(true);
+            gameStarted = true;
+        }
+    }
     void CreateHUD() {
 
         font = new BitmapFont(Gdx.files.internal("Fonts/Font.fnt"));
@@ -134,6 +147,12 @@ public class Level {
         eventsButtons.add(new HUDButton("ArrowLeft", new Vector2(-125,250), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.UseEvent, this, cardsCamera));
         eventsButtons.get(3).SetRotation(-90);
+
+
+        addPlayerButton = new HUDButton("button", new Vector2(500, 450),
+                HUDElement.Anchor.MiddleScreen, cardsCamera, "Add player", font);
+        startButton = new HUDButton("button", new Vector2(0, 0),
+                HUDElement.Anchor.MiddleScreen, cardsCamera, "Start gamer", font);
     }
 
     public void ShowCards() {
@@ -174,61 +193,90 @@ public class Level {
 
     public void update(float delta) {
 
-        if (!cardAnimation)
+        if(gameStarted)
         {
-            //NewPlayer => Show Options
-            if (turnEnded)
+            if (!cardAnimation)
             {
-                ShowOptions();
-            }
-            //Update dice in order to get the number
-            if (dice.isActive())
-            {
-                dice.update(delta);
-                if (dice.throwed)
+                //NewPlayer => Show Options
+                if (turnEnded)
                 {
-                    for (int i = 0 ; i < mainButtons.size(); i++)
+                    ShowOptions();
+                }
+                //Update dice in order to get the number
+                if (dice.isActive())
+                {
+                    dice.update(delta);
+                    if (dice.throwed)
                     {
-                        mainButtons.get(i).setActive(false);
-                    }
-                    for (int i = 0; i < mainTexts.size()-1; i++)
-                    {
-                        mainTexts.get(i).setActive(false);
+                        for (int i = 0 ; i < mainButtons.size(); i++)
+                        {
+                            mainButtons.get(i).setActive(false);
+                        }
+                        for (int i = 0; i < mainTexts.size()-1; i++)
+                        {
+                            mainTexts.get(i).setActive(false);
+                        }
                     }
                 }
-            }
-            else if (!showCards && !showEvents)
-            {
-                //we have the movement
-                if (movement > 0)
+                else if (!showCards && !showEvents)
                 {
-                    //Move Lerped to next square
-                    if (!players.get(currentPlayerIndex).inMovement)
+                    //we have the movement
+                    if (movement > 0)
                     {
-                        int nextSquare = players.get(currentPlayerIndex).currentSquare + 1;
-                        nextSquare %= tableSquares.size();
+                        //Move Lerped to next square
+                        if (!players.get(currentPlayerIndex).inMovement)
+                        {
+                            int nextSquare = players.get(currentPlayerIndex).currentSquare + 1;
+                            nextSquare %= tableSquares.size();
 
-                        players.get(currentPlayerIndex).MoveTo(tableSquares.get(nextSquare).position);
+                            players.get(currentPlayerIndex).MoveTo(tableSquares.get(nextSquare).position);
+                        }
+                        else
+                        {
+                            players.get(currentPlayerIndex).update(delta);
+                        }
                     }
-                    else
+                    else if (movement == 0)
                     {
-                        players.get(currentPlayerIndex).update(delta);
+                        CardUpdate();
                     }
-                }
-                else if (movement == 0)
-                {
-                    CardUpdate();
                 }
             }
+            else
+            {
+                cardToDisplay.update(delta);
+            }
+
+            tableCamera.update();
         }
         else
         {
-            cardToDisplay.update(delta);
-        }
+            if(Gdx.input.justTouched())
+            {
+                Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0.0f);
+                Vector3 worldPosition = tableCamera.orthographicCamera.unproject(mousePosition);
+                Vector2 position = new Vector2(worldPosition.x, worldPosition.y);
 
-        tableCamera.update();
+                if(players.size() < 4 && addPlayerButton.checkClicked(position))
+                {
+                    addPlayer();
+                }
+                if(players.size() >= 2 && startButton.checkClicked(position))
+                {
+                    startGame();
+                }
+            }
+        }
     }
 
+    public void addPlayer()
+    {
+        if(players.size() < 4)
+        {
+            players.add(new Player(players.size() + 1, initialMoney,new Vector2(map.getRegionWidth() + Constants.EXTRA_HUD/2,
+                    ( (players.size() + 1) * tableCamera.viewportHeight/5)), tableSquares.get(0).position, this));
+        }
+    }
     public void DiceEnd() {
 
         dice.setActive(false);
@@ -395,6 +443,18 @@ public class Level {
         }
 
         dice.render(batch);
+
+        if(!gameStarted)
+        {
+            if(players.size() < 4)
+            {
+                addPlayerButton.render(batch);
+            }
+            if(players.size() >= 2)
+            {
+                startButton.render(batch);
+            }
+        }
     }
 
     public void cardsRender (SpriteBatch batch) {

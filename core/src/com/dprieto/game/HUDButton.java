@@ -69,70 +69,73 @@ public class HUDButton extends HUDElement{
     }
 
     public void OnClicked(){
-        switch (type)
+        if(type != null)
         {
-            //region ShowCards
-            case ShowCards:
-                level.cardShowed = 0;
-                level.showCards = true;
-                level.showEvents = false;
+            switch (type)
+            {
+                //region ShowCards
+                case ShowCards:
+                    level.cardShowed = 0;
+                    level.showCards = true;
+                    level.showEvents = false;
 
-                level.ShowCards();
-                break;
+                    level.ShowCards();
+                    break;
 
-            case ExitShowEvents:
-            case ExitShowCard:
+                case ExitShowEvents:
+                case ExitShowCard:
 
-                level.showEvents = false;
-                level.showCards = false;
+                    level.showEvents = false;
+                    level.showCards = false;
 
-                level.HideShowCards();
-                break;
+                    level.HideShowCards();
+                    break;
 
-            case MailLeft:
+                case MailLeft:
 
-                level.cardShowed--;
-                break;
+                    level.cardShowed--;
+                    break;
 
-            case MailRight:
+                case MailRight:
 
-                level.cardShowed++;
-                break;
+                    level.cardShowed++;
+                    break;
 
-            //endregion
+                //endregion
 
-            //region ShowEvents
+                //region ShowEvents
 
-            case ShowEvents:
-                level.eventShowed = 0;
-                level.showEvents = true;
-                level.showCards = false;
+                case ShowEvents:
+                    level.eventShowed = 0;
+                    level.showEvents = true;
+                    level.showCards = false;
 
-                level.ShowCards();
+                    level.ShowCards();
 
-                break;
-
-
-            case EventLeft:
-                level.eventShowed--;
-
-                break;
-
-            case EventRight:
-                level.eventShowed++;
-
-                break;
-
-            case UseEvent:
-                level.UseEvent();
-
-                break;
+                    break;
 
 
-            //endregion
-            case Quit:
-                Gdx.app.exit();
-                break;
+                case EventLeft:
+                    level.eventShowed--;
+
+                    break;
+
+                case EventRight:
+                    level.eventShowed++;
+
+                    break;
+
+                case UseEvent:
+                    level.UseEvent();
+
+                    break;
+
+
+                //endregion
+                case Quit:
+                    Gdx.app.exit();
+                    break;
+            }
         }
     }
 
