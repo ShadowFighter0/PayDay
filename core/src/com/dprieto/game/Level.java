@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+
 import java.util.ArrayList;
 
 public class Level {
@@ -107,7 +109,7 @@ public class Level {
 
 
         //Show Cards
-        cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( -375,0), new Vector2( 0.5f, 0.5f),
+        cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( -400,0), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.MailLeft, this, cardsCamera));
         cardsButtons.add(new HUDButton("ArrowRight", new Vector2(125,0), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.MailRight, this, cardsCamera));
@@ -262,6 +264,9 @@ public class Level {
                 int rand = MathUtils.random(0, players.size() - 1);
                 players.get(rand).money += 100 * (players.size() - 1);
 
+                cardAnimation = false;
+                turnEnded = true;
+
                 TurnEnd();
                 break;
 
@@ -365,27 +370,35 @@ public class Level {
                 cardsButtons.get(i).render(batch);
             }
 
-            if (players.get(currentPlayerIndex).mailCards.size() + players.get(currentPlayerIndex).bargains.size() != 0)
+            if (players.get(currentPlayerIndex).mailCards.size() + players.get(currentPlayerIndex).bargains.size() == 0)
             {
-                cardShowed %= players.get(currentPlayerIndex).mailCards.size() + players.get(currentPlayerIndex).bargains.size();
+                noCards.setText("No Cards");
+                noCards.render(batch);
+                return;
             }
 
-            if (cardShowed < players.get(currentPlayerIndex).mailCards.size() && players.get(currentPlayerIndex).mailCards.size() > cardShowed)
-            {
-                //Showing Mails
-                    players.get(currentPlayerIndex).mailCards.get(cardShowed).renderInPosition
-                            (batch, new Vector2(cardsCamera.position.x, cardsCamera.position.y), new Vector2(0.5f,0.5f));
-            }
-            else if (cardShowed + players.get(currentPlayerIndex).mailCards.size() < players.get(currentPlayerIndex).mailCards.size()
-                    && players.get(currentPlayerIndex).bargains.size() > cardShowed - players.get(currentPlayerIndex).mailCards.size())
-            {
-                //Showing Bargain
-                int bargainShowed = cardShowed - players.get(currentPlayerIndex).mailCards.size() - 1;
+            ArrayList<Card> cards = new ArrayList<Card>();
 
-                players.get(currentPlayerIndex).bargains.get(bargainShowed).renderInPosition
-                        (batch, new Vector2(cardsCamera.position.x, cardsCamera.position.y), new Vector2(0.5f,0.5f));
-
+            for(int i = 0; i < players.get(currentPlayerIndex).mailCards.size(); i++)
+            {
+                cards.add(players.get(currentPlayerIndex).mailCards.get(i));
             }
+            for (int i = 0; i < players.get(currentPlayerIndex).bargains.size(); i++)
+            {
+                cards.add(players.get(currentPlayerIndex).bargains.get(i));
+            }
+
+            if (cardShowed < 0 )
+            {
+                cardShowed = cards.size() - 1;
+            }
+            else if (cardShowed == cards.size())
+            {
+                cardShowed = 0;
+            }
+
+            cards.get(cardShowed).render(batch);
+
         }
         else if (showEvents)
         {

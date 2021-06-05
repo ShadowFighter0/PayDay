@@ -8,7 +8,7 @@ public class Constants {
 
     public static final float ZOOM_MOBILE_SENSITIVITY = 0.001f;
     public static final float PAN_MOBILE_SENSITIVITY = 0.25f;
-    public static final float PLAYER_SPEED = 200;
+    public static final float PLAYER_SPEED = 300;
     public static final float EXTRA_HUD = 290;
     public static final float DISTANCE = 5;
 
