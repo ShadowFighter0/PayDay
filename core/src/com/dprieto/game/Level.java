@@ -24,7 +24,7 @@ public class Level {
     Dice dice;
     ArrayList<HUDButton> cardsButtons;
     ArrayList<HUDButton> mainButtons;
-    ArrayList<HUDText> texts;
+    ArrayList<HUDText> mainTexts;
 
     //Arrays
     ArrayList<MailCard> mailCards;
@@ -44,6 +44,9 @@ public class Level {
     boolean cardAnimation = false;
     boolean showCards = false;
     boolean showEvents = false;
+
+    int cardShowed = 0;
+    int bargainShowed = 0;
 
 
     public Level (int playersNum, ArrayList<TableSquare> tableSquares, int initialMoney)
@@ -84,8 +87,22 @@ public class Level {
 
         mainButtons = new ArrayList<HUDButton>();
         cardsButtons = new ArrayList<HUDButton>();
-        texts = new ArrayList<HUDText>();
+        mainTexts = new ArrayList<HUDText>();
 
+        //Main Buttons
+        mainButtons.add(new HUDButton("EventCard", new Vector2( -300,-50), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.ShowEvents, this, tableCamera));
+        mainButtons.add(new HUDButton("MailCard", new Vector2( 20,-50), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.ShowCards, this, tableCamera));
+
+        mainTexts.add(new HUDText(new Vector2(-350, -100), HUDElement.Anchor.MiddleScreen, font, tableCamera));
+        mainTexts.get(0).setText("Events");
+        mainTexts.add(new HUDText(new Vector2(-50, -100), HUDElement.Anchor.MiddleScreen, font, tableCamera));
+        mainTexts.get(1).setText("My Cards");
+        mainTexts.add(new HUDText(new Vector2(-170, 130), HUDElement.Anchor.MiddleScreen, font, tableCamera));
+        mainTexts.get(2).setText("Dice");
+
+        //Show Cards
         cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( 0,0), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.MailLeft, this, cardsCamera));
         cardsButtons.add(new HUDButton("ArrowRight", new Vector2(0,0), new Vector2( 0.5f, 0.5f),
@@ -94,18 +111,6 @@ public class Level {
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.BargainLeft, this, cardsCamera));
         cardsButtons.add(new HUDButton("ArrowRight", new Vector2( 0,0), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.BargainRight, this, cardsCamera));
-
-        mainButtons.add(new HUDButton("EventCard", new Vector2( -300,-50), new Vector2( 0.5f, 0.5f),
-                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.EventCard, this, tableCamera));
-        mainButtons.add(new HUDButton("MailCard", new Vector2( 20,-50), new Vector2( 0.5f, 0.5f),
-                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.ShowCard, this, tableCamera));
-
-        texts.add(new HUDText(new Vector2(-350, -100), HUDElement.Anchor.MiddleScreen, font, tableCamera));
-        texts.get(0).setText("Events");
-        texts.add(new HUDText(new Vector2(-50, -100), HUDElement.Anchor.MiddleScreen, font, tableCamera));
-        texts.get(1).setText("My Cards");
-        texts.add(new HUDText(new Vector2(-170, 130), HUDElement.Anchor.MiddleScreen, font, tableCamera));
-        texts.get(2).setText("Dice");
     }
 
     public void update(float delta)
@@ -130,7 +135,13 @@ public class Level {
                     //Move Lerped to next square
                     if (!players.get(currentPlayerIndex).inMovement)
                     {
-                        players.get(currentPlayerIndex).MoveTo(tableSquares.get(players.get(currentPlayerIndex).currentSquare + 1).position);
+                        int nextSquare = players.get(currentPlayerIndex).currentSquare + 1;
+                        nextSquare %= tableSquares.size();
+
+                        players.get(currentPlayerIndex).MoveTo(tableSquares.get(nextSquare).position);
+
+                        currentPlayerIndex %= tableSquares.size();
+
                     }
                     else
                     {
@@ -152,15 +163,16 @@ public class Level {
     }
 
     public void DiceEnd(){
+
         dice.setActive(false);
 
         for (int i = 0 ; i < mainButtons.size(); i++)
         {
             mainButtons.get(i).setActive(false);
         }
-        for (int i = 0 ; i < texts.size(); i++)
+        for (int i = 0; i < mainTexts.size(); i++)
         {
-            texts.get(i).setActive(false);
+            mainTexts.get(i).setActive(false);
         }
     }
 
@@ -257,9 +269,9 @@ public class Level {
         {
             mainButtons.get(i).setActive(true);
         }
-        for (int i = 0 ; i < texts.size(); i++)
+        for (int i = 0; i < mainTexts.size(); i++)
         {
-            texts.get(i).setActive(true);
+            mainTexts.get(i).setActive(true);
         }
 
         turnEnded = false;
@@ -277,9 +289,9 @@ public class Level {
         {
             mainButtons.get(i).render(batch);
         }
-        for (int i = 0; i < texts.size(); i++)
+        for (int i = 0; i < mainTexts.size(); i++)
         {
-            texts.get(i).render(batch);
+            mainTexts.get(i).render(batch);
         }
 
         if (cardAnimation)
@@ -290,11 +302,21 @@ public class Level {
     }
 
     public void cardsRender (SpriteBatch batch) {
+
         if (showCards)
         {
             for (int i = 0; i < cardsButtons.size(); i++)
             {
                 cardsButtons.get(i).render(batch);
+            }
+            if (players.get(currentPlayerIndex).mailCards.size() > cardShowed && players.get(currentPlayerIndex).mailCards.get(cardShowed) != null)
+            {
+                players.get(currentPlayerIndex).mailCards.get(cardShowed).renderInPosition(batch, new Vector2(cardsCamera.position.x, cardsCamera.position.y), new Vector2(0.5f,0.5f));
+            }
+
+            if (players.get(currentPlayerIndex).bargains.size() > bargainShowed && players.get(currentPlayerIndex).bargains.get(bargainShowed) != null)
+            {
+                players.get(currentPlayerIndex).mailCards.get(bargainShowed).renderInPosition(batch, new Vector2(cardsCamera.position.x - 50, cardsCamera.position.y), new Vector2(0.5f,0.5f));
             }
         }
         else if (showEvents)

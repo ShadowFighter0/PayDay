@@ -54,13 +54,22 @@ public class Card extends GameObject{
 
         batch.draw(visualCard, position.x - dimension.x/2, position.y - dimension.y/2, dimension.x, dimension.y);
 
-
-
         layout.setText(font, ""+name);
         font.draw(batch, layout, position.x - layout.width / 2, position.y + dimension.y/3);
 
         layout.setText(font, ""+description);
         font.draw(batch, layout, position.x - layout.width / 2, position.y);
+    }
+
+    public void renderInPosition(SpriteBatch batch, Vector2 newPosition, Vector2 dimensionModifier)
+    {
+        batch.draw(visualCard, newPosition.x - dimension.x/2, newPosition.y - dimension.y/2, dimension.x , dimension.y );
+
+        layout.setText(font, ""+name);
+        font.draw(batch, layout, newPosition.x - layout.width / 2, newPosition.y + dimension.y /3);
+
+        layout.setText(font, ""+description);
+        font.draw(batch, layout, newPosition.x - layout.width / 2, newPosition.y + dimension.y );
     }
 
     @Override

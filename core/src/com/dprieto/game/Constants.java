@@ -12,6 +12,10 @@ public class Constants {
     public static final float EXTRA_HUD = 250f;
     public static final float DISTANCE = 5;
 
+    public static final float MAILSHOWNS = 10;
+    public static final float BARGAINSHOWNS = 10;
+
+
     Constants()
     {
 

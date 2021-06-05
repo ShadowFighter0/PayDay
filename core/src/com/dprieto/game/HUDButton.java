@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class HUDButton extends HUDElement{
 
-    enum ButtonType {Quit, EventCard, ShowCard, MailLeft, MailRight, BargainLeft, BargainRight}
+    enum ButtonType {Quit, ShowEvents, ShowCards, MailLeft, MailRight, BargainLeft, BargainRight}
     ButtonType type;
 
     Level level;
@@ -68,6 +68,17 @@ public class HUDButton extends HUDElement{
     public void OnClicked(){
         switch (type)
         {
+
+            case ShowEvents:
+                level.showEvents = true;
+
+                break;
+
+            case ShowCards:
+                level.showCards = true;
+                level.cardShowed = 0;
+                level.bargainShowed = 0;
+                break;
 
             case Quit:
                 Gdx.app.exit();

@@ -34,7 +34,6 @@ public class FileReader {
                 String description = card.get("description");
                 int amount = Integer.parseInt(card.get("amount"));
 
-                Gdx.app.debug("Mail " + j, "name: " + name + " description: " + description + " amount: " + amount);
                 level.mailCards.add(new MailCard(name, description, level, amount));
             }
         }
@@ -69,7 +68,7 @@ public class FileReader {
                         type = Constants.EventType.StealBargain;
                         break;
                 }
-                Gdx.app.debug("Event " + j, "name: " + name + " description: " + description + " amount: " + amount + " Type: " + type);
+
                 level.eventCards.add(new EventCard(name, description, level, amount, type));
             }
         }
@@ -90,7 +89,7 @@ public class FileReader {
                 int buyAmount = Integer.parseInt(card.get("buyAmount"));
                 int sellAmount = Integer.parseInt(card.get("sellAmount"));
 
-                Gdx.app.debug("Bargain " + j, "name: " + name + " description: " + description + " buy amount: " + buyAmount + " sell amount: " + sellAmount);
+
                 level.bargainCards.add(new BargainCard(name, description, level, buyAmount, sellAmount));
             }
         }
