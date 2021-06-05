@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class HUDButton extends HUDElement{
 
-    enum ButtonType {Quit, ShowEvents, ShowCards, MailLeft, MailRight, BargainLeft, BargainRight}
+    enum ButtonType {Quit, ShowEvents, ShowCards, MailLeft, MailRight, ExitShowCard, ExitShowEvents}
     ButtonType type;
 
     Level level;
@@ -52,15 +52,18 @@ public class HUDButton extends HUDElement{
    }
 
     public boolean checkClicked (Vector2 point) {
-        if (point.x > currentPosition.x - dimension.x / 2 && point.x < currentPosition.x + dimension.x / 2
-                && point.y > currentPosition.y - dimension.y / 2 && point.y < currentPosition.y + dimension.y / 2)
+        if (isActive)
         {
-            OnClicked();
-            return true;
-        }
-        else
-        {
-            OnNotClicked();
+            if (point.x > currentPosition.x - dimension.x / 2 && point.x < currentPosition.x + dimension.x / 2
+                    && point.y > currentPosition.y - dimension.y / 2 && point.y < currentPosition.y + dimension.y / 2)
+            {
+                OnClicked();
+                return true;
+            }
+            else
+            {
+                OnNotClicked();
+            }
         }
         return false;
     }
@@ -75,9 +78,26 @@ public class HUDButton extends HUDElement{
                 break;
 
             case ShowCards:
-                level.showCards = true;
-                level.cardShowed = 0;
-                level.bargainShowed = 0;
+                level.ShowCards();
+                break;
+
+            case MailLeft:
+
+                level.cardShowed--;
+                break;
+
+            case MailRight:
+
+                level.cardShowed++;
+                break;
+
+            case ExitShowCard:
+
+                level.HideShowCards();
+                break;
+
+            case ExitShowEvents:
+
                 break;
 
             case Quit:

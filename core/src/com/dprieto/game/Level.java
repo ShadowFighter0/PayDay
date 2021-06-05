@@ -25,12 +25,14 @@ public class Level {
     ArrayList<HUDButton> cardsButtons;
     ArrayList<HUDButton> mainButtons;
     ArrayList<HUDText> mainTexts;
+    HUDText noCards;
 
     //Arrays
     ArrayList<MailCard> mailCards;
     ArrayList<BargainCard> bargainCards;
     ArrayList<EventCard> eventCards;
 
+    //Squares
     ArrayList<TableSquare> tableSquares;
 
     TextureRegion map;
@@ -46,8 +48,6 @@ public class Level {
     boolean showEvents = false;
 
     int cardShowed = 0;
-    int bargainShowed = 0;
-
 
     public Level (int playersNum, ArrayList<TableSquare> tableSquares, int initialMoney)
     {
@@ -75,6 +75,7 @@ public class Level {
         {
             players.add(new Player(i, initialMoney,new Vector2(map.getRegionWidth() + Constants.EXTRA_HUD/2, ( i * tableCamera.viewportHeight/5)), tableSquares.get(0).position, this));
         }
+        players.get(currentPlayerIndex).Turn(true);
     }
 
     void CreateHUD()
@@ -102,15 +103,52 @@ public class Level {
         mainTexts.add(new HUDText(new Vector2(-170, 130), HUDElement.Anchor.MiddleScreen, font, tableCamera));
         mainTexts.get(2).setText("Dice");
 
+        noCards = new HUDText(new Vector2(-170, 0), HUDElement.Anchor.MiddleScreen, font, cardsCamera );
+
+
         //Show Cards
-        cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( 0,0), new Vector2( 0.5f, 0.5f),
+        cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( -375,0), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.MailLeft, this, cardsCamera));
-        cardsButtons.add(new HUDButton("ArrowRight", new Vector2(0,0), new Vector2( 0.5f, 0.5f),
+        cardsButtons.add(new HUDButton("ArrowRight", new Vector2(125,0), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.MailRight, this, cardsCamera));
-        cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( 0,0), new Vector2( 0.5f, 0.5f),
-                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.BargainLeft, this, cardsCamera));
-        cardsButtons.add(new HUDButton("ArrowRight", new Vector2( 0,0), new Vector2( 0.5f, 0.5f),
-                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.BargainRight, this, cardsCamera));
+        cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( -375,-250), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.ExitShowCard, this, cardsCamera));
+    }
+
+    public void ShowCards()
+    {
+        cardShowed = 0;
+
+        showCards = true;
+
+        dice.setActive(false);
+
+        for (int i = 0 ; i < mainButtons.size(); i++)
+        {
+            mainButtons.get(i).setActive(false);
+        }
+        for (int i = 0; i < mainTexts.size(); i++)
+        {
+            mainTexts.get(i).setActive(false);
+        }
+    }
+
+    public void HideShowCards()
+    {
+        cardShowed = 0;
+
+        showCards = false;
+
+        dice.setActive(true);
+
+        for (int i = 0 ; i < mainButtons.size(); i++)
+        {
+            mainButtons.get(i).setActive(true);
+        }
+        for (int i = 0; i < mainTexts.size(); i++)
+        {
+            mainTexts.get(i).setActive(true);
+        }
     }
 
     public void update(float delta)
@@ -126,8 +164,19 @@ public class Level {
             if (dice.isActive())
             {
                 dice.update(delta);
+                if (dice.throwed)
+                {
+                    for (int i = 0 ; i < mainButtons.size(); i++)
+                    {
+                        mainButtons.get(i).setActive(false);
+                    }
+                    for (int i = 0; i < mainTexts.size()-1; i++)
+                    {
+                        mainTexts.get(i).setActive(false);
+                    }
+                }
             }
-            else
+            else if (!showCards && !showEvents)
             {
                 //we have the movement
                 if (movement > 0)
@@ -139,9 +188,6 @@ public class Level {
                         nextSquare %= tableSquares.size();
 
                         players.get(currentPlayerIndex).MoveTo(tableSquares.get(nextSquare).position);
-
-                        currentPlayerIndex %= tableSquares.size();
-
                     }
                     else
                     {
@@ -216,7 +262,7 @@ public class Level {
                 int rand = MathUtils.random(0, players.size() - 1);
                 players.get(rand).money += 100 * (players.size() - 1);
 
-                turnEnded = true;
+                TurnEnd();
                 break;
 
             case StartMonth:
@@ -245,16 +291,24 @@ public class Level {
                     Gdx.app.debug("Player" + currentPlayerIndex + 1, "has been defeated");
                 }
 
+                TurnEnd();
                 break;
         }
+    }
+
+    void TurnEnd()
+    {
+        players.get(currentPlayerIndex).Turn(false);
+        currentPlayerIndex++;
+        currentPlayerIndex %= players.size();
+        players.get(currentPlayerIndex).Turn(true);
     }
 
     public void EndCardAnimation() {
         cardAnimation = false;
         turnEnded = true;
 
-        currentPlayerIndex++;
-        currentPlayerIndex %= players.size();
+        TurnEnd();
     }
 
     public void OnPlayerArrived() {
@@ -278,6 +332,7 @@ public class Level {
     }
 
     public void tableRender (SpriteBatch batch) {
+
         batch.draw(map, 0, 0);
 
         for (int i = 0; i < players.size(); i++)
@@ -309,14 +364,27 @@ public class Level {
             {
                 cardsButtons.get(i).render(batch);
             }
-            if (players.get(currentPlayerIndex).mailCards.size() > cardShowed && players.get(currentPlayerIndex).mailCards.get(cardShowed) != null)
+
+            if (players.get(currentPlayerIndex).mailCards.size() + players.get(currentPlayerIndex).bargains.size() != 0)
             {
-                players.get(currentPlayerIndex).mailCards.get(cardShowed).renderInPosition(batch, new Vector2(cardsCamera.position.x, cardsCamera.position.y), new Vector2(0.5f,0.5f));
+                cardShowed %= players.get(currentPlayerIndex).mailCards.size() + players.get(currentPlayerIndex).bargains.size();
             }
 
-            if (players.get(currentPlayerIndex).bargains.size() > bargainShowed && players.get(currentPlayerIndex).bargains.get(bargainShowed) != null)
+            if (cardShowed < players.get(currentPlayerIndex).mailCards.size() && players.get(currentPlayerIndex).mailCards.size() > cardShowed)
             {
-                players.get(currentPlayerIndex).mailCards.get(bargainShowed).renderInPosition(batch, new Vector2(cardsCamera.position.x - 50, cardsCamera.position.y), new Vector2(0.5f,0.5f));
+                //Showing Mails
+                    players.get(currentPlayerIndex).mailCards.get(cardShowed).renderInPosition
+                            (batch, new Vector2(cardsCamera.position.x, cardsCamera.position.y), new Vector2(0.5f,0.5f));
+            }
+            else if (cardShowed + players.get(currentPlayerIndex).mailCards.size() < players.get(currentPlayerIndex).mailCards.size()
+                    && players.get(currentPlayerIndex).bargains.size() > cardShowed - players.get(currentPlayerIndex).mailCards.size())
+            {
+                //Showing Bargain
+                int bargainShowed = cardShowed - players.get(currentPlayerIndex).mailCards.size() - 1;
+
+                players.get(currentPlayerIndex).bargains.get(bargainShowed).renderInPosition
+                        (batch, new Vector2(cardsCamera.position.x, cardsCamera.position.y), new Vector2(0.5f,0.5f));
+
             }
         }
         else if (showEvents)
