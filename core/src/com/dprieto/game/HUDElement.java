@@ -74,26 +74,29 @@ public class HUDElement {
 
     public void render (SpriteBatch batch)
     {
-        switch (myAnchor)
+        if (isActive)
         {
-            case UpperLeft:
-                anchorPos.x = camera.position.x - camera.currentWidth/2;
-                anchorPos.y = camera.position.y + camera.currentHeight/2;
-                break;
+            switch (myAnchor)
+            {
+                case UpperLeft:
+                    anchorPos.x = camera.position.x - camera.currentWidth/2;
+                    anchorPos.y = camera.position.y + camera.currentHeight/2;
+                    break;
 
-            case UpperRight:
-                anchorPos.x = camera.position.x + camera.currentWidth/2;
-                anchorPos.y = camera.position.y + camera.currentHeight/2;
-                break;
-            case MiddleScreen:
-                anchorPos.x = camera.position.x;
-                anchorPos.y = camera.position.y;
-                break;
+                case UpperRight:
+                    anchorPos.x = camera.position.x + camera.currentWidth/2;
+                    anchorPos.y = camera.position.y + camera.currentHeight/2;
+                    break;
+                case MiddleScreen:
+                    anchorPos.x = camera.position.x;
+                    anchorPos.y = camera.position.y;
+                    break;
+            }
+
+            currentPosition.x = anchorPos.x + offsetPosition.x;
+            currentPosition.y = anchorPos.y + offsetPosition.y;
+
+            batch.draw(image, anchorPos.x + (offsetPosition.x - dimension.x/2), anchorPos.y + (offsetPosition.y - dimension.y/2), dimension.x, dimension.y);
         }
-
-        currentPosition.x = anchorPos.x + offsetPosition.x;
-        currentPosition.y = anchorPos.y + offsetPosition.y;
-
-        batch.draw(image, anchorPos.x + (offsetPosition.x - dimension.x/2), anchorPos.y + (offsetPosition.y - dimension.y/2), dimension.x, dimension.y);
     }
 }

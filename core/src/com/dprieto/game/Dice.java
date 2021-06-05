@@ -84,7 +84,7 @@ public class Dice extends GameObject{
         if (currentSecsUntilTurnOff <= 0)
         {
             throwed = false;
-            setActive(false);
+            level.DiceEnd();
             level.movement = number;
         }
     }

@@ -151,6 +151,19 @@ public class Level {
         tableCamera.update();
     }
 
+    public void DiceEnd(){
+        dice.setActive(false);
+
+        for (int i = 0 ; i < mainButtons.size(); i++)
+        {
+            mainButtons.get(i).setActive(false);
+        }
+        for (int i = 0 ; i < texts.size(); i++)
+        {
+            texts.get(i).setActive(false);
+        }
+    }
+
     private void CardUpdate() {
         switch (tableSquares.get(players.get(currentPlayerIndex).currentSquare).type)
         {
@@ -224,8 +237,7 @@ public class Level {
         }
     }
 
-    public void EndCardAnimation()
-    {
+    public void EndCardAnimation() {
         cardAnimation = false;
         turnEnded = true;
 
@@ -233,23 +245,27 @@ public class Level {
         currentPlayerIndex %= players.size();
     }
 
-    public void OnPlayerArrived()
-    {
+    public void OnPlayerArrived() {
         movement--;
     }
 
-    void ShowOptions()
-    {
+    void ShowOptions() {
         dice.setActive(true);
         dice.Reset();
-        //View Events
-        //View Cards
+
+        for (int i = 0 ; i < mainButtons.size(); i++)
+        {
+            mainButtons.get(i).setActive(true);
+        }
+        for (int i = 0 ; i < texts.size(); i++)
+        {
+            texts.get(i).setActive(true);
+        }
 
         turnEnded = false;
     }
 
-    public void tableRender (SpriteBatch batch)
-    {
+    public void tableRender (SpriteBatch batch) {
         batch.draw(map, 0, 0);
 
         for (int i = 0; i < players.size(); i++)
@@ -273,8 +289,7 @@ public class Level {
         dice.render(batch);
     }
 
-    public void cardsRender (SpriteBatch batch)
-    {
+    public void cardsRender (SpriteBatch batch) {
         if (showCards)
         {
             for (int i = 0; i < cardsButtons.size(); i++)

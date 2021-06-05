@@ -30,6 +30,9 @@ public class Player extends GameObject{
     TextureRegion playerCardTexture;
     TextureRegion tokenTexture;
 
+    HUDText nameText;
+    HUDText moneyText;
+
     public Player (int numPlayer, int initialMoney, Vector2 cardPosition, Vector2 tokenPosition, Level level) {
 
         this.level = level;
@@ -55,6 +58,11 @@ public class Player extends GameObject{
         bargains = new ArrayList<BargainCard>();
         mailCards = new ArrayList<MailCard>();
         events = new ArrayList<EventCard>();
+
+        nameText = new HUDText(new Vector2(0,50), position, level.font, level.tableCamera);
+        nameText.setText("Jugador "+ numPlayer);
+        moneyText = new HUDText(new Vector2(0,-30), position, level.font, level.tableCamera);
+
     }
 
     public void MoveTo(Vector2 newTokenPosition) {
@@ -72,7 +80,7 @@ public class Player extends GameObject{
 
             tokenPosition.add(movement.nor().scl(Constants.PLAYER_SPEED * delta));
 
-            if (tokenPosition.cpy().dst(newTokenPosition.cpy()) <= 0.5f)
+            if (tokenPosition.cpy().dst(newTokenPosition.cpy()) <= Constants.DISTANCE)
             {
                 currentSquare++;
                 inMovement = false;
@@ -86,6 +94,12 @@ public class Player extends GameObject{
 
         batch.draw(playerCardTexture, position.x - dimension.x/2, position.y - dimension.y/2, dimension.x, dimension.y);
         batch.draw(tokenTexture, this.tokenPosition.x - tokenDimension.x/2, this.tokenPosition.y - tokenDimension.y/2);
+
+        nameText.render(batch);
+        moneyText.setText("Money: " + money );
+        moneyText.font.getData().setScale(0.9f);
+        moneyText.render(batch);
+        moneyText.font.getData().setScale(1);
     }
 
     @Override

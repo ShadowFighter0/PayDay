@@ -22,35 +22,56 @@ public class HUDText extends HUDElement{
         this.camera = camera;
         this.font = font;
         text = "";
+
+        isActive = true;
+    }
+
+    public HUDText (Vector2 position, Vector2 anchor, BitmapFont font, Camera camera) {
+
+        this.offsetPosition = position;
+        this.currentPosition = position.cpy();
+
+        this.myAnchor = null;
+        anchorPos = anchor;
+
+        this.camera = camera;
+        this.font = font;
+        text = "";
+
+        isActive = true;
     }
 
     @Override
     public void render(SpriteBatch batch) {
 
-        switch (myAnchor)
-        {
-            case UpperLeft:
-                anchorPos.x = camera.position.x - camera.currentWidth/2;
-                anchorPos.y = camera.position.y + camera.currentHeight/2;
-                break;
+        if (isActive) {
+            if (myAnchor != null)
+            {
+                switch (myAnchor) {
+                    case UpperLeft:
+                        anchorPos.x = camera.position.x - camera.currentWidth / 2;
+                        anchorPos.y = camera.position.y + camera.currentHeight / 2;
+                        break;
 
-            case UpperRight:
-                anchorPos.x = camera.position.x + camera.currentWidth/2;
-                anchorPos.y = camera.position.y + camera.currentHeight/2;
-                break;
-            case MiddleScreen:
-                anchorPos.x = camera.position.x;
-                anchorPos.y = camera.position.y;
-                break;
+                    case UpperRight:
+                        anchorPos.x = camera.position.x + camera.currentWidth / 2;
+                        anchorPos.y = camera.position.y + camera.currentHeight / 2;
+                        break;
+                    case MiddleScreen:
+                        anchorPos.x = camera.position.x;
+                        anchorPos.y = camera.position.y;
+                        break;
+                }
+            }
+
+            currentPosition.x = anchorPos.x + offsetPosition.x;
+            currentPosition.y = anchorPos.y + offsetPosition.y;
+
+            font.draw(batch,
+                    "" + text,
+                    currentPosition.x - textOffset.x / 2.0f,
+                    currentPosition.y + textOffset.y / 2.0f);
         }
-
-        currentPosition.x = anchorPos.x + offsetPosition.x;
-        currentPosition.y = anchorPos.y + offsetPosition.y;
-
-        font.draw(batch,
-                "" + text,
-                currentPosition.x - textOffset.x / 2.0f ,
-                currentPosition.y + textOffset.y / 2.0f);
     }
 
     public void setText(String text)
