@@ -166,7 +166,7 @@ public class Level {
     public void UseEvent()
     {
         usingEvent = true;
-        players.get(currentPlayerIndex).events.get(eventShowed).use();
+        players.get(currentPlayerIndex).events.get(eventShowed);
     }
 
     public void update(float delta) {
