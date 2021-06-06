@@ -1,7 +1,5 @@
 package com.dprieto.game;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 public class EventCard extends Card {
 
     int amount;
@@ -16,6 +14,7 @@ public class EventCard extends Card {
         dimension.y = visualCard.getRegionHeight() * 2.5f;
 
         this.amount = amount;
+        this.type = type;
     }
 
     public void Use (Player caster, Player objective)

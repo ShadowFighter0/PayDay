@@ -219,6 +219,10 @@ public class Level {
 
             EventCard event = players.get(currentPlayerIndex).events.get(eventShowed);
 
+            Gdx.app.debug("Event", "" + eventShowed);
+            Gdx.app.debug("Event", "" + event);
+            Gdx.app.debug("Event", "" + event.type);
+
             switch (event.type)
             {
                 case EarnMoney:
@@ -428,7 +432,7 @@ public class Level {
         if (players.size() < 4)
         {
             players.add(new Player(players.size() + 1, initialMoney,new Vector2(board.width + Constants.EXTRA_HUD/2,
-                    ( (players.size() + 1) * tableCamera.viewportHeight/5)), tableSquares.get(0).position, this));
+                    ((players.size() + 1) * tableCamera.viewportHeight/5)), tableSquares.get(0).position, this));
         }
     }
 

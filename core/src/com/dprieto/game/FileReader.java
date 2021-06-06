@@ -69,6 +69,8 @@ public class FileReader {
                         break;
                 }
 
+                Gdx.app.debug("EventCreated", "" + type);
+
                 level.eventCards.add(new EventCard(name, description, level, amount, type));
             }
         }
