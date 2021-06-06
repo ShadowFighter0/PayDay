@@ -3,85 +3,85 @@
  <tileset firstgid="1" source="Tileset_Map.tsx"/>
  <tileset firstgid="961" source="Set.tsx"/>
  <objectgroup id="4" name="Boxes">
-  <object id="45" name="Event" x="72" y="70.6667">
-   <point/>
-  </object>
-  <object id="46" name="Mail" x="190.667" y="73.3333">
-   <point/>
-  </object>
-  <object id="47" name="Bargain" x="321.333" y="76">
-   <point/>
-  </object>
-  <object id="48" name="Lottery" x="432" y="77.3333">
-   <point/>
-  </object>
-  <object id="49" name="Event" x="581.333" y="64">
-   <point/>
-  </object>
-  <object id="51" name="Mail" x="706" y="73">
-   <point/>
-  </object>
-  <object id="52" name="Lottery" x="833" y="76">
-   <point/>
-  </object>
-  <object id="53" name="Bargain" x="955" y="82">
-   <point/>
-  </object>
-  <object id="54" name="Event" x="949" y="206">
-   <point/>
-  </object>
-  <object id="55" name="Mail" x="951" y="342">
-   <point/>
-  </object>
-  <object id="56" name="Lottery" x="951" y="464">
-   <point/>
-  </object>
-  <object id="57" name="Bargain" x="945" y="592">
-   <point/>
-  </object>
-  <object id="58" name="Event" x="953" y="721">
-   <point/>
-  </object>
-  <object id="59" name="Mail" x="951" y="845">
-   <point/>
-  </object>
-  <object id="60" name="Lottery" x="948" y="963">
-   <point/>
-  </object>
-  <object id="61" name="Bargain" x="832" y="959">
-   <point/>
-  </object>
-  <object id="62" name="Event" x="696" y="962">
-   <point/>
-  </object>
-  <object id="63" name="Mail" x="578" y="959">
-   <point/>
-  </object>
-  <object id="64" name="Lottery" x="446" y="962">
+  <object id="66" name="Event" x="192" y="965">
    <point/>
   </object>
   <object id="65" name="Bargain" x="317" y="964">
    <point/>
   </object>
-  <object id="66" name="Event" x="192" y="965">
+  <object id="64" name="Lottery" x="446" y="962">
    <point/>
   </object>
-  <object id="67" name="Bargain" x="65" y="841">
+  <object id="63" name="Mail" x="578" y="959">
    <point/>
   </object>
-  <object id="68" name="Lottery" x="66" y="726">
+  <object id="62" name="Event" x="696" y="962">
    <point/>
   </object>
-  <object id="69" name="Event" x="67" y="592">
+  <object id="61" name="Bargain" x="832" y="959">
    <point/>
   </object>
-  <object id="70" name="Mail" x="66" y="470">
+  <object id="60" name="Lottery" x="948" y="963">
+   <point/>
+  </object>
+  <object id="59" name="Mail" x="951" y="845">
+   <point/>
+  </object>
+  <object id="58" name="Event" x="953" y="721">
+   <point/>
+  </object>
+  <object id="57" name="Bargain" x="945" y="592">
+   <point/>
+  </object>
+  <object id="56" name="Lottery" x="951" y="464">
+   <point/>
+  </object>
+  <object id="55" name="Mail" x="951" y="342">
+   <point/>
+  </object>
+  <object id="54" name="Event" x="949" y="206">
+   <point/>
+  </object>
+  <object id="53" name="Bargain" x="955" y="82">
+   <point/>
+  </object>
+  <object id="52" name="Lottery" x="833" y="76">
+   <point/>
+  </object>
+  <object id="51" name="Mail" x="706" y="73">
+   <point/>
+  </object>
+  <object id="49" name="Event" x="581.333" y="64">
+   <point/>
+  </object>
+  <object id="48" name="Lottery" x="432" y="77.3333">
+   <point/>
+  </object>
+  <object id="47" name="Bargain" x="321.333" y="76">
+   <point/>
+  </object>
+  <object id="46" name="Mail" x="190.667" y="73.3333">
+   <point/>
+  </object>
+  <object id="45" name="Event" x="72" y="70.6667">
+   <point/>
+  </object>
+  <object id="72" name="Lottery" x="69" y="207">
    <point/>
   </object>
   <object id="71" name="Bargain" x="66" y="339">
    <point/>
   </object>
-  <object id="72" name="Lotery" x="69" y="207">
+  <object id="70" name="Mail" x="66" y="470">
+   <point/>
+  </object>
+  <object id="69" name="Event" x="67" y="592">
+   <point/>
+  </object>
+  <object id="68" name="Lottery" x="66" y="726">
+   <point/>
+  </object>
+  <object id="67" name="Bargain" x="65" y="841">
    <point/>
   </object>
   <object id="74" name="Start" x="66" y="972">
