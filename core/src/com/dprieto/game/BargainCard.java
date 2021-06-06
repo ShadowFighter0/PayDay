@@ -1,6 +1,7 @@
 package com.dprieto.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 public class BargainCard extends Card {
 
@@ -17,5 +18,10 @@ public class BargainCard extends Card {
 
         this.buyAmount = buyAmount;
         this.sellAmount = sellAmount;
+    }
+
+    @Override
+    public void OnClicked() {
+
     }
 }

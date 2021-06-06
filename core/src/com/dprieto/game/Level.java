@@ -561,7 +561,7 @@ public class Level {
 
             case Start:
 
-                TurnEnd();
+                EndCardAnimation();
 
                 break;
         }
