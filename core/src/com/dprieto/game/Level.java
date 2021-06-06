@@ -168,7 +168,7 @@ public class Level {
         //Show Cards
         cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( -400,0), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.MailLeft, this, cardsCamera));
-        cardsButtons.add(new HUDButton("ArrowRight", new Vector2(125,0), new Vector2( 0.5f, 0.5f),
+        cardsButtons.add(new HUDButton("ArrowRight", new Vector2(150,0), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.MailRight, this, cardsCamera));
         cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( -375,-250), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.ExitShowCard, this, cardsCamera));
@@ -177,7 +177,7 @@ public class Level {
         //Events Button
         eventsButtons.add(new HUDButton("ArrowLeft", new Vector2( -400,0), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.EventLeft, this, cardsCamera));
-        eventsButtons.add(new HUDButton("ArrowRight", new Vector2(125,0), new Vector2( 0.5f, 0.5f),
+        eventsButtons.add(new HUDButton("ArrowRight", new Vector2(150,0), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.EventRight, this, cardsCamera));
         eventsButtons.add(new HUDButton("ArrowLeft", new Vector2(-375,-250), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.ExitShowEvents, this, cardsCamera));
@@ -239,7 +239,6 @@ public class Level {
             players.get(currentPlayerIndex).money += bargainCard.buyAmount;
         }
 
-
         EndCardAnimation();
     }
 
@@ -267,14 +266,14 @@ public class Level {
 
         if (usingEvent)
         {
-            selectPlayerText.setActive(true);
-            selectPlayerText.setText("Select a Player");
+            if (players.get(currentPlayerIndex).events.size() == 0)
+            {
+                return;
+            }
+
+            eventShowed %= players.get(currentPlayerIndex).events.size();
 
             EventCard event = players.get(currentPlayerIndex).events.get(eventShowed);
-
-            Gdx.app.debug("Event", "" + eventShowed);
-            Gdx.app.debug("Event", "" + event);
-            Gdx.app.debug("Event", "" + event.type);
 
             switch (event.type)
             {
@@ -297,6 +296,8 @@ public class Level {
                         event.Use(players.get(currentPlayerIndex), players.get(playerObjective));
                         players.get(currentPlayerIndex).events.remove(eventShowed);
                         usingEvent = false;
+                        selectPlayerText.setActive(false);
+
                         playerObjective = -1;
                     }
                     break;
@@ -538,14 +539,14 @@ public class Level {
                     cardAnimation = true;
 
                     //Enable buttons and texts
-                    for (int i = 0; i < buyBargainsButtons.size(); i++)
+                    buyBargainsText.get(0).setActive(true);
+                    if (players.get(currentPlayerIndex).money > bargainCard.buyAmount)
                     {
-                        buyBargainsButtons.get(i).setActive(true);
+                        buyBargainsButtons.get(0).setActive(true);
+                        buyBargainsText.get(1).setActive(true);
                     }
-                    for (int i = 0; i < buyBargainsText.size(); i++)
-                    {
-                        buyBargainsText.get(i).setActive(true);
-                    }
+                    buyBargainsButtons.get(1).setActive(true);
+                    buyBargainsText.get(2).setActive(true);
                 }
                 break;
 
