@@ -28,7 +28,7 @@ public class Card extends GameObject{
 
         this.level = level;
 
-        position = new Vector2(level.map.getRegionWidth()/2, level.map.getRegionHeight()/2);
+        position = new Vector2(level.board.width/2, level.board.height/2);
 
         layout = level.layout;
         font = level.font;

@@ -46,7 +46,7 @@ public class Level {
     //Squares
     ArrayList<TableSquare> tableSquares;
 
-    TextureRegion map;
+    Board board;
     Card cardToDisplay;
     ArrayList<Player> players;
 
@@ -72,14 +72,13 @@ public class Level {
 
     LotteryCard lotteryCard = null;
     private int initialMoney = 0;
-    public Level (int playersNum, ArrayList<TableSquare> tableSquares, int initialMoney)
+    public Level (int initialMoney)
     {
+        tableSquares = new ArrayList<TableSquare>();
+        board = new Board(this);
 
-        map = AssetManager.getInstance().getTexture("ProvisionalMap");
-        this.tableSquares = tableSquares;
-
-        tableCamera = new Camera (map.getRegionWidth() + Constants.EXTRA_HUD, map.getRegionHeight());
-        cardsCamera = new Camera (map.getRegionWidth() + Constants.EXTRA_HUD, map.getRegionHeight());
+        tableCamera = new Camera (board.width + Constants.EXTRA_HUD, board.height);
+        cardsCamera = new Camera (board.width + Constants.EXTRA_HUD, board.height);
 
         CreateHUD();
 
@@ -230,7 +229,7 @@ public class Level {
             case StealBargain:
 
                 selectPlayerText.setActive(true);
-                selectPlayerText.setText("Pls select a player");
+                selectPlayerText.setText("Please select a player");
 
                 if (playerObjective > 0)
                 {
@@ -414,7 +413,7 @@ public class Level {
 
         if (players.size() < 4)
         {
-            players.add(new Player(players.size() + 1, initialMoney,new Vector2(map.getRegionWidth() + Constants.EXTRA_HUD/2,
+            players.add(new Player(players.size() + 1, initialMoney,new Vector2(board.width + Constants.EXTRA_HUD/2,
                     ( (players.size() + 1) * tableCamera.viewportHeight/5)), tableSquares.get(0).position, this));
         }
     }
@@ -544,7 +543,7 @@ public class Level {
 
     public void tableRender (SpriteBatch batch) {
 
-        batch.draw(map, 0, 0);
+        board.render(batch);
 
         for (int i = 0; i < players.size(); i++)
         {

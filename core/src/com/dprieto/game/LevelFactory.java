@@ -35,7 +35,7 @@ public class LevelFactory {
                 //Main Menu cuantos jugadores van a jugar?
             case 1:
 
-                Board gameMap = new Board();
+                // Board gameMap = new Board();
 
                 ArrayList<TableSquare> squares = new ArrayList<TableSquare>();
 
@@ -60,7 +60,7 @@ public class LevelFactory {
                 squares.add(new TableSquare( Constants.SquareType.Lottery, new Vector2(300, 100)));
 
 
-                return new Level(4, squares, 1000);
+                return new Level(1000);
         }
         return null;
     }
