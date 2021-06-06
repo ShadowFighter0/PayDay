@@ -170,7 +170,7 @@ public class Level {
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.MailLeft, this, cardsCamera));
         cardsButtons.add(new HUDButton("ArrowRight", new Vector2(150,0), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.MailRight, this, cardsCamera));
-        cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( -375,-250), new Vector2( 0.5f, 0.5f),
+        cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( -400,-250), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.ExitShowCard, this, cardsCamera));
 
 
@@ -179,7 +179,7 @@ public class Level {
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.EventLeft, this, cardsCamera));
         eventsButtons.add(new HUDButton("ArrowRight", new Vector2(150,0), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.EventRight, this, cardsCamera));
-        eventsButtons.add(new HUDButton("ArrowLeft", new Vector2(-375,-250), new Vector2( 0.5f, 0.5f),
+        eventsButtons.add(new HUDButton("ArrowLeft", new Vector2(-400,-250), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.ExitShowEvents, this, cardsCamera));
         eventsButtons.add(new HUDButton("ArrowLeft", new Vector2(-125,250), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.UseEvent, this, cardsCamera));
@@ -196,9 +196,9 @@ public class Level {
         //Start Money
         mailMoneyText = new HUDText(new Vector2(-250,250), HUDElement.Anchor.MiddleScreen, font, tableCamera);
         bargainMoneyText = new HUDText(new Vector2(-250,200), HUDElement.Anchor.MiddleScreen, font, tableCamera);
-        currentMoneyText = new HUDText(new Vector2(-250,125), HUDElement.Anchor.MiddleScreen, font, tableCamera);
-        substractText = new HUDText(new Vector2(-250,75), HUDElement.Anchor.MiddleScreen, font, tableCamera);
-        resultText = new HUDText(new Vector2(-250,0), HUDElement.Anchor.MiddleScreen, font, tableCamera);
+        currentMoneyText = new HUDText(new Vector2(-250,100), HUDElement.Anchor.MiddleScreen, font, tableCamera);
+        substractText = new HUDText(new Vector2(-250,50), HUDElement.Anchor.MiddleScreen, font, tableCamera);
+        resultText = new HUDText(new Vector2(-250,-25), HUDElement.Anchor.MiddleScreen, font, tableCamera);
         exitStartMonth = new HUDButton("ArrowLeft", new Vector2(-250,-100), HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.EndStartMonth, this, tableCamera);
         exitStartMonth.setActive(false);
     }
@@ -333,7 +333,7 @@ public class Level {
                     //we have the movement
                     if (movement > 0)
                     {
-                        PLayerMovement(delta);
+                        PlayerMovement(delta);
                     }
                     else if (movement == 0)
                     {
@@ -369,7 +369,7 @@ public class Level {
         }
     }
 
-    private void PLayerMovement(float delta) {
+    private void PlayerMovement(float delta) {
 
         //Move Lerped to next square
         if (!players.get(currentPlayerIndex).inMovement)
@@ -422,9 +422,6 @@ public class Level {
             mailAmount += players.get(currentPlayerIndex).mailCards.get(i).amount;
         }
 
-        Gdx.app.debug("MailAmount", "" + mailAmount);
-        Gdx.app.debug("BargainAmount", "" + bargainAmount);
-
         //Display bargain
         mailMoneyText.setText("Mails:   " + mailAmount);
         mailMoneyText.setActive(true);
@@ -435,11 +432,12 @@ public class Level {
         currentMoneyText.setText("My Money:   " + players.get(currentPlayerIndex).money);
         currentMoneyText.setActive(true);
 
-        substractText.setText("              " + (bargainAmount - mailAmount));
+        substractText.setText("              " + (bargainAmount + mailAmount));
         substractText.setActive(true);
 
-        int aux = players.get(currentPlayerIndex).money;
-        resultText.setText("             " +  aux + (bargainAmount + mailAmount));
+        players.get(currentPlayerIndex).money += (bargainAmount + mailAmount);
+
+        resultText.setText("             " +  players.get(currentPlayerIndex).money);
         resultText.setActive(true);
 
         exitStartMonth.setActive(true);
@@ -570,7 +568,15 @@ public class Level {
 
             case Start:
 
-                StartMonth();
+                if(!endStartMonth && !disableStartMonth)
+                {
+                    StartMonth();
+                }
+                else
+                {
+                    ExitStartMonth();
+                }
+
                 TurnEnd();
 
                 break;
