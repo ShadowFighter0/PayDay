@@ -236,22 +236,11 @@ public class Level {
                 players.get(currentPlayerIndex).bargains.add(bargainCard);
             }
 
-            players.get(currentPlayerIndex).money -= bargainCard.buyAmount;
+            players.get(currentPlayerIndex).money += bargainCard.buyAmount;
         }
 
-        //Enable buttons and texts
-        for (int i = 0; i < buyBargainsButtons.size(); i++)
-        {
-            buyBargainsButtons.get(i).setActive(false);
-        }
-        for (int i = 0; i < buyBargainsText.size(); i++)
-        {
-            buyBargainsText.get(i).setActive(false);
-        }
 
         EndCardAnimation();
-
-        bargainShowed = false;
     }
 
     public void HideShowCards() {
@@ -596,6 +585,19 @@ public class Level {
     }
 
     public void EndCardAnimation() {
+
+        //Enable buttons and texts
+        for (int i = 0; i < buyBargainsButtons.size(); i++)
+        {
+            buyBargainsButtons.get(i).setActive(false);
+        }
+        for (int i = 0; i < buyBargainsText.size(); i++)
+        {
+            buyBargainsText.get(i).setActive(false);
+        }
+
+        bargainShowed = false;
+
 
         cardAnimation = false;
         turnEnded = true;
