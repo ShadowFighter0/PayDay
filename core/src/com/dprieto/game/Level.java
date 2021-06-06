@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+
 import java.util.ArrayList;
 
 public class Level {
@@ -23,14 +25,25 @@ public class Level {
     //Buttons
     Dice dice;
     ArrayList<HUDButton> cardsButtons;
+    ArrayList<HUDButton> eventsButtons;
     ArrayList<HUDButton> mainButtons;
     ArrayList<HUDText> mainTexts;
+    HUDText noCards;
+    HUDText selectPlayerText;
+
+    HUDText mailMoneyText;
+    HUDText bargainMoneyText;
+    HUDText currentMoneyText;
+    HUDText substractText;
+    HUDText resultText;
+    HUDButton exitStartMonth;
 
     //Arrays
     ArrayList<MailCard> mailCards;
     ArrayList<BargainCard> bargainCards;
     ArrayList<EventCard> eventCards;
 
+    //Squares
     ArrayList<TableSquare> tableSquares;
 
     TextureRegion map;
@@ -44,11 +57,21 @@ public class Level {
     boolean cardAnimation = false;
     boolean showCards = false;
     boolean showEvents = false;
+    boolean usingEvent = false;
+
+    boolean endStartMonth = false;
+    boolean disableStartMonth = false;
 
     int cardShowed = 0;
-    int bargainShowed = 0;
+    int eventShowed = 0;
+    int playerObjective = 0;
 
+    HUDButton addPlayerButton;
+    HUDButton startButton;
+    private boolean gameStarted = false;
 
+    LotteryCard lotteryCard = null;
+    private int initialMoney = 0;
     public Level (int playersNum, ArrayList<TableSquare> tableSquares, int initialMoney)
     {
 
@@ -71,14 +94,26 @@ public class Level {
         reader.LoadXML();
 
         //Create Players
-        for (int i = 1; i <= playersNum; i++)
+        this.initialMoney = initialMoney;
+//        for (int i = 1; i <= playersNum; i++)
+//        {
+//            players.add(new Player(i, initialMoney,new Vector2(map.getRegionWidth() + Constants.EXTRA_HUD/2, ( i * tableCamera.viewportHeight/5)), tableSquares.get(0).position, this));
+//        }
+
+        lotteryCard = new LotteryCard(this);
+    }
+
+    private void startGame()
+    {
+        if(players.size() >= 2)
         {
-            players.add(new Player(i, initialMoney,new Vector2(map.getRegionWidth() + Constants.EXTRA_HUD/2, ( i * tableCamera.viewportHeight/5)), tableSquares.get(0).position, this));
+            players.get(currentPlayerIndex).Turn(true);
+            gameStarted = true;
         }
     }
 
-    void CreateHUD()
-    {
+    void CreateHUD() {
+
         font = new BitmapFont(Gdx.files.internal("Fonts/Font.fnt"));
         font.setColor(Color.BLACK);
 
@@ -88,6 +123,7 @@ public class Level {
         mainButtons = new ArrayList<HUDButton>();
         cardsButtons = new ArrayList<HUDButton>();
         mainTexts = new ArrayList<HUDText>();
+        eventsButtons = new ArrayList<HUDButton>();
 
         //Main Buttons
         mainButtons.add(new HUDButton("EventCard", new Vector2( -300,-50), new Vector2( 0.5f, 0.5f),
@@ -102,67 +138,288 @@ public class Level {
         mainTexts.add(new HUDText(new Vector2(-170, 130), HUDElement.Anchor.MiddleScreen, font, tableCamera));
         mainTexts.get(2).setText("Dice");
 
+        noCards = new HUDText(new Vector2(-170, 0), HUDElement.Anchor.MiddleScreen, font, cardsCamera );
+
         //Show Cards
-        cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( 0,0), new Vector2( 0.5f, 0.5f),
+        cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( -400,0), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.MailLeft, this, cardsCamera));
-        cardsButtons.add(new HUDButton("ArrowRight", new Vector2(0,0), new Vector2( 0.5f, 0.5f),
+        cardsButtons.add(new HUDButton("ArrowRight", new Vector2(125,0), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.MailRight, this, cardsCamera));
-        cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( 0,0), new Vector2( 0.5f, 0.5f),
-                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.BargainLeft, this, cardsCamera));
-        cardsButtons.add(new HUDButton("ArrowRight", new Vector2( 0,0), new Vector2( 0.5f, 0.5f),
-                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.BargainRight, this, cardsCamera));
+        cardsButtons.add(new HUDButton("ArrowLeft", new Vector2( -375,-250), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.ExitShowCard, this, cardsCamera));
+
+
+        //Events Button
+        eventsButtons.add(new HUDButton("ArrowLeft", new Vector2( -400,0), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.EventLeft, this, cardsCamera));
+        eventsButtons.add(new HUDButton("ArrowRight", new Vector2(125,0), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.EventRight, this, cardsCamera));
+        eventsButtons.add(new HUDButton("ArrowLeft", new Vector2(-375,-250), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.ExitShowEvents, this, cardsCamera));
+        eventsButtons.add(new HUDButton("ArrowLeft", new Vector2(-125,250), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.UseEvent, this, cardsCamera));
+        eventsButtons.get(3).SetRotation(-90);
+
+        selectPlayerText = new HUDText(new Vector2(-125,200), HUDElement.Anchor.MiddleScreen, font, tableCamera);
+
+
+        addPlayerButton = new HUDButton("button", new Vector2(500, 450),
+                HUDElement.Anchor.MiddleScreen, cardsCamera, "Add player", font);
+        startButton = new HUDButton("button", new Vector2(-150, -200),
+                HUDElement.Anchor.MiddleScreen, cardsCamera, "Start game", font);
+
+        //Start Money
+        mailMoneyText = new HUDText(new Vector2(-250,250), HUDElement.Anchor.MiddleScreen, font, tableCamera);
+        bargainMoneyText = new HUDText(new Vector2(-250,200), HUDElement.Anchor.MiddleScreen, font, tableCamera);
+        currentMoneyText = new HUDText(new Vector2(-250,125), HUDElement.Anchor.MiddleScreen, font, tableCamera);
+        substractText = new HUDText(new Vector2(-250,100), HUDElement.Anchor.MiddleScreen, font, tableCamera);
+        resultText = new HUDText(new Vector2(-250,50), HUDElement.Anchor.MiddleScreen, font, tableCamera);
+        exitStartMonth = new HUDButton("ArrowLeft", new Vector2(-250,-100), HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.EndStartMonth, this, tableCamera);
+        exitStartMonth.setActive(false);
     }
 
-    public void update(float delta)
-    {
-        if (!cardAnimation)
+    public void ShowCards() {
+
+        cardShowed = 0;
+        eventShowed = 0;
+
+        dice.setActive(false);
+
+        for (int i = 0; i < mainButtons.size(); i++)
         {
-            //NewPlayer => Show Options
-            if (turnEnded)
+            mainButtons.get(i).setActive(false);
+        }
+
+        for (int i = 0; i < mainTexts.size(); i++)
+        {
+            mainTexts.get(i).setActive(false);
+        }
+    }
+
+    public void HideShowCards() {
+
+        dice.setActive(true);
+
+        for (int i = 0 ; i < mainButtons.size(); i++)
+        {
+            mainButtons.get(i).setActive(true);
+        }
+        for (int i = 0; i < mainTexts.size(); i++)
+        {
+            mainTexts.get(i).setActive(true);
+        }
+    }
+
+    public void UseEvent()
+    {
+        usingEvent = true;
+        selectPlayerText.setActive(true);
+        selectPlayerText.setText("Select a Player");
+
+        EventCard event = players.get(currentPlayerIndex).events.get(eventShowed);
+
+        switch (event.type)
+        {
+            case EarnMoney:
+
+                event.Use(players.get(currentPlayerIndex), null);
+                break;
+
+            case PlayersEarnMoney:
+            case PlayerLoseMoney:
+            case StealBargain:
+
+                selectPlayerText.setActive(true);
+                selectPlayerText.setText("Pls select a player");
+
+                if (playerObjective > 0)
+                {
+                    event.Use(players.get(currentPlayerIndex), players.get(playerObjective));
+                }
+                break;
+        }
+
+        players.get(currentPlayerIndex).events.remove(eventShowed);
+    }
+
+    public void update(float delta) {
+
+        if (gameStarted)
+        {
+            if (!cardAnimation)
             {
-                ShowOptions();
-            }
-            //Update dice in order to get the number
-            if (dice.isActive())
-            {
-                dice.update(delta);
+                //NewPlayer => Show Options
+                if (turnEnded)
+                {
+                    ShowOptions();
+                }
+                //Update dice in order to get the number
+                if (dice.isActive())
+                {
+                    dice.update(delta);
+                    if (dice.throwed)
+                    {
+                        for (int i = 0 ; i < mainButtons.size(); i++)
+                        {
+                            mainButtons.get(i).setActive(false);
+                        }
+                        for (int i = 0; i < mainTexts.size()-1; i++)
+                        {
+                            mainTexts.get(i).setActive(false);
+                        }
+                    }
+                }
+                else if (!showCards && !showEvents)
+                {
+                    //we have the movement
+                    if (movement > 0)
+                    {
+                        PLayerMovement(delta);
+                    }
+                    else if (movement == 0)
+                    {
+                        players.get(currentPlayerIndex).currentSquare %= tableSquares.size();
+                        CardUpdate();
+                    }
+                }
             }
             else
             {
-                //we have the movement
-                if (movement > 0)
+                cardToDisplay.update(delta);
+            }
+
+            tableCamera.update();
+        }
+        else
+        {
+            if (Gdx.input.justTouched())
+            {
+                Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0.0f);
+                Vector3 worldPosition = tableCamera.orthographicCamera.unproject(mousePosition);
+                Vector2 position = new Vector2(worldPosition.x, worldPosition.y);
+
+                if (players.size() < 4 && addPlayerButton.checkClicked(position))
                 {
-                    //Move Lerped to next square
-                    if (!players.get(currentPlayerIndex).inMovement)
-                    {
-                        int nextSquare = players.get(currentPlayerIndex).currentSquare + 1;
-                        nextSquare %= tableSquares.size();
-
-                        players.get(currentPlayerIndex).MoveTo(tableSquares.get(nextSquare).position);
-
-                        currentPlayerIndex %= tableSquares.size();
-
-                    }
-                    else
-                    {
-                        players.get(currentPlayerIndex).update(delta);
-                    }
+                    addPlayer();
                 }
-                else if (movement == 0)
+                if (players.size() >= 2 && startButton.checkClicked(position))
                 {
-                    CardUpdate();
+                    startGame();
                 }
+            }
+        }
+    }
+
+    private void PLayerMovement(float delta) {
+
+        //Move Lerped to next square
+        if (!players.get(currentPlayerIndex).inMovement)
+        {
+            if (tableSquares.get(players.get(currentPlayerIndex).currentSquare).type == Constants.SquareType.StartMonth && !endStartMonth && !disableStartMonth)
+            {
+                StartMonth();
+            }
+            else if (endStartMonth && !disableStartMonth)
+            {
+                ExitStartMonth();
+            }
+            else
+            {
+                int nextSquare = players.get(currentPlayerIndex).currentSquare + 1;
+                nextSquare %= tableSquares.size();
+
+                players.get(currentPlayerIndex).MoveTo(tableSquares.get(nextSquare).position);
             }
         }
         else
         {
-            cardToDisplay.update(delta);
+            players.get(currentPlayerIndex).update(delta);
         }
-
-        tableCamera.update();
     }
 
-    public void DiceEnd(){
+    void StartMonth() {
+
+        int mailAmount = 0;
+        int bargainAmount = 0;
+
+        for (int i = 0; i < players.get(currentPlayerIndex).bargains.size(); i++)
+        {
+            bargainAmount += players.get(currentPlayerIndex).bargains.get(i).sellAmount;
+        }
+        for (int i = 0; i < players.get(currentPlayerIndex).mailCards.size(); i++)
+        {
+            mailAmount += players.get(currentPlayerIndex).mailCards.get(i).amount;
+        }
+
+        Gdx.app.debug("MailAmount", "" + mailAmount);
+        Gdx.app.debug("BargainAmount", "" + bargainAmount);
+
+        //Display bargain
+        mailMoneyText.setText("Mails:   " + mailAmount);
+        mailMoneyText.setActive(true);
+
+        bargainMoneyText.setText("Bargains:   " + bargainAmount);
+        bargainMoneyText.setActive(true);
+
+        currentMoneyText.setText("My Money:   " + players.get(currentPlayerIndex).money);
+        currentMoneyText.setActive(true);
+
+        substractText.setText("              " + (bargainAmount - mailAmount));
+        substractText.setActive(true);
+
+        int aux = players.get(currentPlayerIndex).money;
+        resultText.setText("             " +  aux + (bargainAmount + mailAmount));
+        resultText.setActive(true);
+
+        exitStartMonth.setActive(true);
+    }
+
+    public void ExitStartMonth() {
+
+        //Turn end
+        int mailAmount = 0;
+        int bargainAmount = 0;
+
+        for (int i = 0; i < players.get(currentPlayerIndex).bargains.size(); i++)
+        {
+            bargainAmount += players.get(currentPlayerIndex).bargains.get(i).sellAmount;
+        }
+        for (int i = 0; i < players.get(currentPlayerIndex).mailCards.size(); i++)
+        {
+            mailAmount += players.get(currentPlayerIndex).mailCards.get(i).amount;
+        }
+
+        players.get(currentPlayerIndex).money += (bargainAmount + mailAmount);
+        players.get(currentPlayerIndex).bargains.clear();
+        players.get(currentPlayerIndex).mailCards.clear();
+
+        if (players.get(currentPlayerIndex).money < 0)
+        {
+            Gdx.app.debug("Player" + currentPlayerIndex + 1, "has been defeated");
+        }
+
+        mailMoneyText.setActive(false);
+        bargainMoneyText.setActive(false);
+        currentMoneyText.setActive(false);
+        substractText.setActive(false);
+        resultText.setActive(false);
+
+        exitStartMonth.setActive(false);
+
+        endStartMonth = false;
+        disableStartMonth = true;
+    }
+
+    public void addPlayer() {
+
+        if (players.size() < 4)
+        {
+            players.add(new Player(players.size() + 1, initialMoney,new Vector2(map.getRegionWidth() + Constants.EXTRA_HUD/2,
+                    ( (players.size() + 1) * tableCamera.viewportHeight/5)), tableSquares.get(0).position, this));
+        }
+    }
+
+    public void DiceEnd() {
 
         dice.setActive(false);
 
@@ -177,6 +434,7 @@ public class Level {
     }
 
     private void CardUpdate() {
+
         switch (tableSquares.get(players.get(currentPlayerIndex).currentSquare).type)
         {
             case Mail:
@@ -188,6 +446,7 @@ public class Level {
                 cardAnimation = true;
                 break;
 
+
             case Event:
                 EventCard event = eventCards.remove(0);
                 players.get(currentPlayerIndex).events.add(event);
@@ -197,14 +456,26 @@ public class Level {
                 cardAnimation = true;
                 break;
 
+
             case Bargain:
                 BargainCard bargainCard = bargainCards.remove(0);
-                players.get(currentPlayerIndex).bargains.add(bargainCard);
+
+                if (players.get(currentPlayerIndex).mustGiveBargain)
+                {
+                    players.get(currentPlayerIndex).playerToGiveBargain.bargains.add(bargainCard);
+                    players.get(currentPlayerIndex).mustGiveBargain = false;
+                    players.get(currentPlayerIndex).playerToGiveBargain = null;
+                }
+                else
+                {
+                    players.get(currentPlayerIndex).bargains.add(bargainCard);
+                }
                 bargainCards.add(bargainCard);
 
                 cardToDisplay = bargainCard;
                 cardAnimation = true;
                 break;
+
 
             case Lottery:
                 for (int i = 0; i < players.size(); i++) {
@@ -216,52 +487,46 @@ public class Level {
                 int rand = MathUtils.random(0, players.size() - 1);
                 players.get(rand).money += 100 * (players.size() - 1);
 
-                turnEnded = true;
+                lotteryCard.setDescription("El jugador " + (rand + 1) + " ha ganado " + (100 * (players.size() - 1)) + "!");
+                cardToDisplay = lotteryCard;
+                cardAnimation = true;
+
+                //TurnEnd();
                 break;
+
 
             case StartMonth:
 
-                int mailAmount = 0;
-                int bargainAmount = 0;
-
-                for (int i = 0; i < players.get(currentPlayerIndex).bargains.size(); i++)
-                {
-                    bargainAmount += players.get(currentPlayerIndex).bargains.get(i).sellAmount;
-                }
-                for (int i = 0; i < players.get(currentPlayerIndex).mailCards.size(); i++)
-                {
-                    mailAmount += players.get(currentPlayerIndex).mailCards.get(i).amount;
-                }
-
-                //Display bargain
-
-
-
-                //
-                players.get(currentPlayerIndex).money -= mailAmount;
-
-                if (players.get(currentPlayerIndex).money < 0)
-                {
-                    Gdx.app.debug("Player" + currentPlayerIndex + 1, "has been defeated");
-                }
+                StartMonth();
+                TurnEnd();
 
                 break;
         }
     }
 
+    void TurnEnd() {
+
+        players.get(currentPlayerIndex).Turn(false);
+        currentPlayerIndex++;
+        currentPlayerIndex %= players.size();
+        players.get(currentPlayerIndex).Turn(true);
+    }
+
     public void EndCardAnimation() {
+
         cardAnimation = false;
         turnEnded = true;
 
-        currentPlayerIndex++;
-        currentPlayerIndex %= players.size();
+        TurnEnd();
     }
 
     public void OnPlayerArrived() {
+
         movement--;
     }
 
     void ShowOptions() {
+
         dice.setActive(true);
         dice.Reset();
 
@@ -278,6 +543,7 @@ public class Level {
     }
 
     public void tableRender (SpriteBatch batch) {
+
         batch.draw(map, 0, 0);
 
         for (int i = 0; i < players.size(); i++)
@@ -289,16 +555,37 @@ public class Level {
         {
             mainButtons.get(i).render(batch);
         }
+
         for (int i = 0; i < mainTexts.size(); i++)
         {
             mainTexts.get(i).render(batch);
         }
 
         if (cardAnimation)
+        {
             cardToDisplay.render(batch);
-
+        }
 
         dice.render(batch);
+
+        exitStartMonth.render(batch);
+        mailMoneyText.render(batch);
+        bargainMoneyText.render(batch);
+        currentMoneyText.render(batch);
+        substractText.render(batch);
+        resultText.render(batch);
+
+        if(!gameStarted)
+        {
+            if(players.size() < 4)
+            {
+                addPlayerButton.render(batch);
+            }
+            if(players.size() >= 2)
+            {
+                startButton.render(batch);
+            }
+        }
     }
 
     public void cardsRender (SpriteBatch batch) {
@@ -309,20 +596,62 @@ public class Level {
             {
                 cardsButtons.get(i).render(batch);
             }
-            if (players.get(currentPlayerIndex).mailCards.size() > cardShowed && players.get(currentPlayerIndex).mailCards.get(cardShowed) != null)
+
+            if (players.get(currentPlayerIndex).mailCards.size() + players.get(currentPlayerIndex).bargains.size() == 0)
             {
-                players.get(currentPlayerIndex).mailCards.get(cardShowed).renderInPosition(batch, new Vector2(cardsCamera.position.x, cardsCamera.position.y), new Vector2(0.5f,0.5f));
+                noCards.setText("No Cards");
+                noCards.render(batch);
+                return;
             }
 
-            if (players.get(currentPlayerIndex).bargains.size() > bargainShowed && players.get(currentPlayerIndex).bargains.get(bargainShowed) != null)
+            ArrayList<Card> cards = new ArrayList<Card>();
+
+            for(int i = 0; i < players.get(currentPlayerIndex).mailCards.size(); i++)
             {
-                players.get(currentPlayerIndex).mailCards.get(bargainShowed).renderInPosition(batch, new Vector2(cardsCamera.position.x - 50, cardsCamera.position.y), new Vector2(0.5f,0.5f));
+                cards.add(players.get(currentPlayerIndex).mailCards.get(i));
             }
+            for (int i = 0; i < players.get(currentPlayerIndex).bargains.size(); i++)
+            {
+                cards.add(players.get(currentPlayerIndex).bargains.get(i));
+            }
+
+            if (cardShowed < 0 )
+            {
+                cardShowed = cards.size() - 1;
+            }
+            else if (cardShowed == cards.size())
+            {
+                cardShowed = 0;
+            }
+
+            cards.get(cardShowed).render(batch);
         }
         else if (showEvents)
         {
+            for (int i = 0; i < eventsButtons.size(); i++)
+            {
+                eventsButtons.get(i).render(batch);
+            }
 
+            if (players.get(currentPlayerIndex).events.size() == 0)
+            {
+                noCards.setText("No Cards");
+                noCards.render(batch);
+                return;
+            }
+
+            if (eventShowed < 0)
+            {
+                eventShowed = players.get(currentPlayerIndex).events.size() - 1;
+            }
+            else if (eventShowed == players.get(currentPlayerIndex).events.size())
+            {
+                eventShowed = 0;
+            }
+
+            players.get(currentPlayerIndex).events.get(eventShowed).render(batch);
+
+            selectPlayerText.render(batch);
         }
-
     }
 }
