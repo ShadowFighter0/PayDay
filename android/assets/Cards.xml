@@ -3,17 +3,51 @@
 	<mail>
 
 		<card id = "1">
-			<name>Paco</name>
-			<description>A pagar por putisimo
-				payaso</description>
-			<amount> -1000 </amount>
+			<name>Mail</name>
+			<description>Car reparations</description>
+			<amount> -200 </amount>
 		</card>
 
 		<card id = "2">
-			<name>Petete</name>
-			<description>A pagar por putisimo
-				payaso</description>
-			<amount> -1000 </amount>
+			<name>Mail</name>
+			<description>Hospital treatment without insurance</description>
+			<amount> -300 </amount>
+		</card>
+
+		<card id = "3">
+			<name>Mail</name>
+			<description>Babysitter bill</description>
+			<amount> -150 </amount>
+		</card>
+
+		<card id = "4">
+			<name>Mail</name>
+			<description>Burned kitchen</description>
+			<amount> -500 </amount>
+		</card>
+
+		<card id = "5">
+			<name>Mail</name>
+			<description>Dentist appointment</description>
+			<amount> -100 </amount>
+		</card>
+
+		<card id = "6">
+			<name>Mail</name>
+			<description>House reform</description>
+			<amount> -400 </amount>
+		</card>
+
+		<card id = "7">
+			<name>Mail</name>
+			<description>Fill gasoline tank</description>
+			<amount> -70 </amount>
+		</card>
+
+		<card id = "8">
+			<name>Mail</name>
+			<description>Family meeting</description>
+			<amount> -250 </amount>
 		</card>
 
 	</mail>
@@ -21,53 +55,122 @@
 
 
 	<event>
-
 		<card id = "1">
-			<name>Name</name>
-			<description>A pagar por putisimo
-				payaso</description>
-			<amount>-1000 </amount>
+			<name>Event</name>
+			<description>Use this card to earn money</description>
+			<amount> 100 </amount>
 			<type>EarnMoney</type>
 		</card>
 
 		<card id = "2">
-			<name>Name</name>
-			<description>A pagar por putisimo
-				payaso</description>
-			<amount>-1000 </amount>
+			<name>Event</name>
+			<description>You and any player you chose receive money</description>
+			<amount> 1000 </amount>
 			<type>PlayersEarnMoney </type>
 		</card>
 
 		<card id = "3">
-			<name>Name</name>
-			<description>A pagar por putisimo
-				payaso</description>
-			<amount>-1000 </amount>
+			<name>Event</name>
+			<description>The player you chose loses money</description>
+			<amount> -300 </amount>
 			<type>PlayerLoseMoney</type>
 		</card>
 
 		<card id = "4">
-			<name>Name</name>
-			<description>A pagar por putisimo
-				payaso</description>
-			<amount>-1000 </amount>
+			<name>Event</name>
+			<description>Use this card to steal a bargain</description>
+			<amount> 0 </amount>
 			<type>StealBargain</type>
 		</card>
 
+		<card id = "5">
+			<name>Event</name>
+			<description>Use this card to earn money</description>
+			<amount> 200 </amount>
+			<type>EarnMoney</type>
+		</card>
+
+		<card id = "6">
+			<name>Event</name>
+			<description>You and any player you chose receive money</description>
+			<amount> 500 </amount>
+			<type>PlayersEarnMoney </type>
+		</card>
+
+		<card id = "7">
+			<name>Event</name>
+			<description>You and any player you chose receive money</description>
+			<amount> 500 </amount>
+			<type>PlayersEarnMoney </type>
+		</card>
+
+		<card id = "8">
+			<name>Event</name>
+			<description>The player you chose loses money</description>
+			<amount> -150 </amount>
+			<type>PlayerLoseMoney</type>
+		</card>
 	</event>
 
 
 
 	<bargain>
-
 		<card id = "1">
 			<name> Name </name>
-			<description> A pagar por putisimo
-				payaso </description>
-			<buyAmount> -1000 </buyAmount>
-			<sellAmount> 1000 </sellAmount>
+			<description> Swimming pool </description>
+			<buyAmount> -750 </buyAmount>
+			<sellAmount> 1200 </sellAmount>
 		</card>
 
+		<card id = "2">
+			<name> Name </name>
+			<description> Microwave </description>
+			<buyAmount> -150 </buyAmount>
+			<sellAmount> 220 </sellAmount>
+		</card>
+
+		<card id = "3">
+			<name> Name </name>
+			<description> Laptop </description>
+			<buyAmount> -1600 </buyAmount>
+			<sellAmount> 2900 </sellAmount>
+		</card>
+
+		<card id = "4">
+			<name> Name </name>
+			<description> Chair </description>
+			<buyAmount> -50 </buyAmount>
+			<sellAmount> 80 </sellAmount>
+		</card>
+
+		<card id = "5">
+			<name> Name </name>
+			<description> TV </description>
+			<buyAmount> -600 </buyAmount>
+			<sellAmount> 950 </sellAmount>
+		</card>
+
+		<card id = "6">
+			<name> Name </name>
+			<description> Lamp </description>
+			<buyAmount> -30 </buyAmount>
+			<sellAmount> 70 </sellAmount>
+		</card>
+
+		<card id = "7">
+			<name> Name </name>
+			<description> Motorbike </description>
+			<buyAmount> -1900 </buyAmount>
+			<sellAmount> 3100 </sellAmount>
+		</card>
+
+
+		<card id = "8">
+			<name> Name </name>
+			<description> Car </description>
+			<buyAmount> -2500 </buyAmount>
+			<sellAmount> 4000 </sellAmount>
+		</card>
 	</bargain>
 
 </cards>

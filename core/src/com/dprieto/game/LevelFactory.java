@@ -29,6 +29,10 @@ public class LevelFactory {
             case 0:
                 //Main Menu cuantos jugadores van a jugar?
             case 1:
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
                 ArrayList<TableSquare> squares = new ArrayList<TableSquare>();
 
                 squares.add(new TableSquare(Constants.SquareType.Start, new Vector2(100, 100)));
