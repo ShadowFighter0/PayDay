@@ -66,7 +66,7 @@ public class Player extends GameObject{
         events = new ArrayList<EventCard>();
 
         nameText = new HUDText(new Vector2(-25,50), position, level.font, level.tableCamera);
-        nameText.setText("Jugador "+ numPlayer);
+        nameText.setText("Player "+ numPlayer);
         moneyText = new HUDText(new Vector2(0,-30), position, level.font, level.tableCamera);
     }
 
@@ -124,6 +124,7 @@ public class Player extends GameObject{
         batch.draw(tokenTexture, position.x + dimension.x / 4 , position.y - tokenDimension.y/2);
         nameText.render(batch);
         moneyText.setText("Money: " + money );
+
         moneyText.font.getData().setScale(0.9f);
         moneyText.render(batch);
         moneyText.font.getData().setScale(1);
