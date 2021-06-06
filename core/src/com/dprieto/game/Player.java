@@ -130,6 +130,7 @@ public class Player extends GameObject{
     @Override
     public void OnClicked() {
 
+        level.playerObjective = numPlayer;
     }
 
     @Override

@@ -78,6 +78,15 @@ public class InputManagerDesktop implements InputProcessor {
                 }
             }
         }
+
+        if (level.usingEvent)
+        {
+            for (int i = 0; i < level.players.size(); i++)
+            {
+                level.players.get(i).checkClicked(point);
+            }
+        }
+
         if (level.exitStartMonth.isActive)
         {
             level.exitStartMonth.checkClicked(point);

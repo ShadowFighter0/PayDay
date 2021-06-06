@@ -69,6 +69,7 @@ public class HUDButton extends HUDElement{
     }
 
     public void OnClicked(){
+
         if(type != null)
         {
             switch (type)

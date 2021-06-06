@@ -45,5 +45,8 @@ public class EventCard extends Card {
 
                 break;
         }
+
+        level.usingEvent = false;
+        level.playerObjective = -1;
     }
 }

@@ -58,7 +58,9 @@ public class Level {
     boolean showCards = false;
     boolean showEvents = false;
     boolean usingEvent = false;
+
     boolean endStartMonth = false;
+    boolean disableStartMonth = false;
 
     int cardShowed = 0;
     int eventShowed = 0;
@@ -158,6 +160,8 @@ public class Level {
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.UseEvent, this, cardsCamera));
         eventsButtons.get(3).SetRotation(-90);
 
+        selectPlayerText = new HUDText(new Vector2(-125,200), HUDElement.Anchor.MiddleScreen, font, tableCamera);
+
 
         addPlayerButton = new HUDButton("button", new Vector2(500, 450),
                 HUDElement.Anchor.MiddleScreen, cardsCamera, "Add player", font);
@@ -170,11 +174,12 @@ public class Level {
         currentMoneyText = new HUDText(new Vector2(-250,125), HUDElement.Anchor.MiddleScreen, font, tableCamera);
         substractText = new HUDText(new Vector2(-250,100), HUDElement.Anchor.MiddleScreen, font, tableCamera);
         resultText = new HUDText(new Vector2(-250,50), HUDElement.Anchor.MiddleScreen, font, tableCamera);
-        exitStartMonth = new HUDButton("ArrowLeft", new Vector2(-250,-50), HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.UseEvent, this, tableCamera);
+        exitStartMonth = new HUDButton("ArrowLeft", new Vector2(-250,-100), HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.EndStartMonth, this, tableCamera);
         exitStartMonth.setActive(false);
-        }
+    }
 
     public void ShowCards() {
+
         cardShowed = 0;
         eventShowed = 0;
 
@@ -208,14 +213,38 @@ public class Level {
     public void UseEvent()
     {
         usingEvent = true;
+        selectPlayerText.setActive(true);
+        selectPlayerText.setText("Select a Player");
 
-        players.get(playerObjective).events.get(eventShowed).Use
-                (players.get(currentPlayerIndex),players.get(playerObjective));
+        EventCard event = players.get(currentPlayerIndex).events.get(eventShowed);
+
+        switch (event.type)
+        {
+            case EarnMoney:
+
+                event.Use(players.get(currentPlayerIndex), null);
+                break;
+
+            case PlayersEarnMoney:
+            case PlayerLoseMoney:
+            case StealBargain:
+
+                selectPlayerText.setActive(true);
+                selectPlayerText.setText("Pls select a player");
+
+                if (playerObjective > 0)
+                {
+                    event.Use(players.get(currentPlayerIndex), players.get(playerObjective));
+                }
+                break;
+        }
+
+        players.get(currentPlayerIndex).events.remove(eventShowed);
     }
 
     public void update(float delta) {
 
-        if(gameStarted)
+        if (gameStarted)
         {
             if (!cardAnimation)
             {
@@ -245,34 +274,7 @@ public class Level {
                     //we have the movement
                     if (movement > 0)
                     {
-                        //Move Lerped to next square
-                        if (!players.get(currentPlayerIndex).inMovement)
-                        {
-                            int nextSquare = players.get(currentPlayerIndex).currentSquare + 1;
-                            nextSquare %= tableSquares.size();
-
-                            Gdx.app.debug("Square", nextSquare + "" +tableSquares.get(nextSquare).type);
-                            if (tableSquares.get(nextSquare).type == Constants.SquareType.StartMonth)
-                            {
-
-                                if (!endStartMonth)
-                                {
-                                    StartMonth();
-                                }
-                                else
-                                {
-                                    ExitStartMonth();
-                                }
-                            }
-                            else
-                            {
-                                players.get(currentPlayerIndex).MoveTo(tableSquares.get(nextSquare).position);
-                            }
-                        }
-                        else
-                        {
-                            players.get(currentPlayerIndex).update(delta);
-                        }
+                        PLayerMovement(delta);
                     }
                     else if (movement == 0)
                     {
@@ -308,8 +310,35 @@ public class Level {
         }
     }
 
-    void StartMonth()
-    {
+    private void PLayerMovement(float delta) {
+
+        //Move Lerped to next square
+        if (!players.get(currentPlayerIndex).inMovement)
+        {
+            if (tableSquares.get(players.get(currentPlayerIndex).currentSquare).type == Constants.SquareType.StartMonth && !endStartMonth && !disableStartMonth)
+            {
+                StartMonth();
+            }
+            else if (endStartMonth && !disableStartMonth)
+            {
+                ExitStartMonth();
+            }
+            else
+            {
+                int nextSquare = players.get(currentPlayerIndex).currentSquare + 1;
+                nextSquare %= tableSquares.size();
+
+                players.get(currentPlayerIndex).MoveTo(tableSquares.get(nextSquare).position);
+            }
+        }
+        else
+        {
+            players.get(currentPlayerIndex).update(delta);
+        }
+    }
+
+    void StartMonth() {
+
         int mailAmount = 0;
         int bargainAmount = 0;
 
@@ -322,36 +351,53 @@ public class Level {
             mailAmount += players.get(currentPlayerIndex).mailCards.get(i).amount;
         }
 
-        //Display bargain
+        Gdx.app.debug("MailAmount", "" + mailAmount);
+        Gdx.app.debug("BargainAmount", "" + bargainAmount);
 
-        mailMoneyText.setText("Mails:   - " + mailAmount);
+        //Display bargain
+        mailMoneyText.setText("Mails:   " + mailAmount);
         mailMoneyText.setActive(true);
-        bargainMoneyText.setText("Bargains:   + " + bargainAmount);
+
+        bargainMoneyText.setText("Bargains:   " + bargainAmount);
         bargainMoneyText.setActive(true);
+
         currentMoneyText.setText("My Money:   " + players.get(currentPlayerIndex).money);
         currentMoneyText.setActive(true);
+
         substractText.setText("              " + (bargainAmount - mailAmount));
         substractText.setActive(true);
-        resultText.setText("             " + players.get(currentPlayerIndex).money + (bargainAmount - mailAmount));
+
+        int aux = players.get(currentPlayerIndex).money;
+        resultText.setText("             " +  aux + (bargainAmount + mailAmount));
         resultText.setActive(true);
 
         exitStartMonth.setActive(true);
+    }
 
-        players.get(currentPlayerIndex).money -= mailAmount;
+    public void ExitStartMonth() {
+
+        //Turn end
+        int mailAmount = 0;
+        int bargainAmount = 0;
+
+        for (int i = 0; i < players.get(currentPlayerIndex).bargains.size(); i++)
+        {
+            bargainAmount += players.get(currentPlayerIndex).bargains.get(i).sellAmount;
+        }
+        for (int i = 0; i < players.get(currentPlayerIndex).mailCards.size(); i++)
+        {
+            mailAmount += players.get(currentPlayerIndex).mailCards.get(i).amount;
+        }
+
+        players.get(currentPlayerIndex).money += (bargainAmount + mailAmount);
+        players.get(currentPlayerIndex).bargains.clear();
+        players.get(currentPlayerIndex).mailCards.clear();
 
         if (players.get(currentPlayerIndex).money < 0)
         {
             Gdx.app.debug("Player" + currentPlayerIndex + 1, "has been defeated");
         }
-        //Turn end
 
-        players.get(currentPlayerIndex).money += (bargainAmount - mailAmount);
-        players.get(currentPlayerIndex).bargains.clear();
-        players.get(currentPlayerIndex).mailCards.clear();
-    }
-
-    public void ExitStartMonth()
-    {
         mailMoneyText.setActive(false);
         bargainMoneyText.setActive(false);
         currentMoneyText.setActive(false);
@@ -359,6 +405,9 @@ public class Level {
         resultText.setActive(false);
 
         exitStartMonth.setActive(false);
+
+        endStartMonth = false;
+        disableStartMonth = true;
     }
 
     public void addPlayer() {
@@ -455,8 +504,8 @@ public class Level {
         }
     }
 
-    void TurnEnd()
-    {
+    void TurnEnd() {
+
         players.get(currentPlayerIndex).Turn(false);
         currentPlayerIndex++;
         currentPlayerIndex %= players.size();
@@ -601,6 +650,8 @@ public class Level {
             }
 
             players.get(currentPlayerIndex).events.get(eventShowed).render(batch);
+
+            selectPlayerText.render(batch);
         }
     }
 }
