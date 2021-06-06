@@ -292,7 +292,7 @@ public class Level {
                     selectPlayerText.setActive(true);
                     selectPlayerText.setText("Please select a player");
 
-                    if (playerObjective > 0)
+                    if (playerObjective > 0 && !players.get(playerObjective).equals(players.get(currentPlayerIndex)))
                     {
                         event.Use(players.get(currentPlayerIndex), players.get(playerObjective));
                         players.get(currentPlayerIndex).events.remove(eventShowed);
@@ -562,7 +562,7 @@ public class Level {
                 int rand = MathUtils.random(0, players.size() - 1);
                 players.get(rand).money += totalAmount;
 
-                lotteryCard.setDescription("El jugador " + (rand + 1) + " ha ganado " + totalAmount + "!");
+                lotteryCard.setDescription("El jugador " + players.get(rand).nameText.text + " ha ganado " + totalAmount + "!");
                 cardToDisplay = lotteryCard;
                 cardAnimation = true;
 
@@ -586,7 +586,7 @@ public class Level {
             movement = 0;
             if(players.size() == 1)
             {
-                PayDay.instance.setScreen(new MainMenu());
+                PayDay.instance.setScreen(new EndScreen(players.get(0).nameText.text));
                 return;
             }
         }
