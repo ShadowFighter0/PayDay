@@ -90,6 +90,7 @@ public class HUDButton extends HUDElement{
 
                     level.showEvents = false;
                     level.showCards = false;
+                    level.usingEvent = false;
 
                     level.HideShowCards();
                     break;
@@ -97,13 +98,11 @@ public class HUDButton extends HUDElement{
                 case MailLeft:
 
                     level.cardShowed--;
-                    Gdx.app.debug("Cards", "--");
                     break;
 
                 case MailRight:
 
                     level.cardShowed++;
-                    Gdx.app.debug("Cards", "++");
                     break;
 
                 //endregion
@@ -122,13 +121,11 @@ public class HUDButton extends HUDElement{
 
                 case EventLeft:
                     level.eventShowed--;
-                    Gdx.app.debug("Cards", "--");
 
                     break;
 
                 case EventRight:
                     level.eventShowed++;
-                    Gdx.app.debug("Cards", "++");
 
                     break;
 

@@ -113,8 +113,6 @@ public class Dice extends GameObject{
 
     @Override
     public void render(SpriteBatch batch) {
-        //Gdx.app.debug("OJO", "" + position + " " + dimension);
-
 
         if (isActive())
         {

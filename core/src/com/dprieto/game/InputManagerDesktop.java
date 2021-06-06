@@ -60,7 +60,7 @@ public class InputManagerDesktop implements InputProcessor {
         point.y = pos.y;
 
 
-        if (level.dice.isActive())
+        if (level.dice.isActive() && level.gameStarted)
         {
              level.dice.checkClicked(point);
 

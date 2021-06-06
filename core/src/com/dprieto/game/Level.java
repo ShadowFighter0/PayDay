@@ -77,7 +77,7 @@ public class Level {
     //Start Game
     HUDButton addPlayerButton;
     HUDButton startButton;
-    private boolean gameStarted = false;
+    boolean gameStarted = false;
 
     LotteryCard lotteryCard = null;
     private int initialMoney = 0;
