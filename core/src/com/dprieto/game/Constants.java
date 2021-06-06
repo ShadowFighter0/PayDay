@@ -1,7 +1,5 @@
 package com.dprieto.game;
 
-import java.util.HashMap;
-
 public class Constants {
 
     static Constants instance;
@@ -12,18 +10,14 @@ public class Constants {
     public static final float EXTRA_HUD = 290;
     public static final float DISTANCE = 5;
 
-    public static final float MAILSHOWNS = 10;
-    public static final float BARGAINSHOWNS = 10;
-
-
-    Constants()
-    {
-
-
-    }
 
     enum EventType {EarnMoney, PlayersEarnMoney, PlayerLoseMoney, StealBargain }
     enum SquareType {Mail, Event, Lottery, Bargain, StartMonth}
+
+
+    Constants() {
+    }
+
 
     public static Constants getInstance()
     {

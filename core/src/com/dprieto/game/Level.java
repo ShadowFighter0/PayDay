@@ -29,6 +29,14 @@ public class Level {
     ArrayList<HUDButton> mainButtons;
     ArrayList<HUDText> mainTexts;
     HUDText noCards;
+    HUDText selectPlayerText;
+
+    HUDText mailMoneyText;
+    HUDText bargainMoneyText;
+    HUDText currentMoneyText;
+    HUDText substractText;
+    HUDText resultText;
+    HUDButton exitStartMonth;
 
     //Arrays
     ArrayList<MailCard> mailCards;
@@ -50,6 +58,7 @@ public class Level {
     boolean showCards = false;
     boolean showEvents = false;
     boolean usingEvent = false;
+    boolean endStartMonth = false;
 
     int cardShowed = 0;
     int eventShowed = 0;
@@ -100,6 +109,7 @@ public class Level {
             gameStarted = true;
         }
     }
+
     void CreateHUD() {
 
         font = new BitmapFont(Gdx.files.internal("Fonts/Font.fnt"));
@@ -153,7 +163,16 @@ public class Level {
                 HUDElement.Anchor.MiddleScreen, cardsCamera, "Add player", font);
         startButton = new HUDButton("button", new Vector2(-150, -200),
                 HUDElement.Anchor.MiddleScreen, cardsCamera, "Start game", font);
-    }
+
+        //Start Money
+        mailMoneyText = new HUDText(new Vector2(-250,250), HUDElement.Anchor.MiddleScreen, font, tableCamera);
+        bargainMoneyText = new HUDText(new Vector2(-250,200), HUDElement.Anchor.MiddleScreen, font, tableCamera);
+        currentMoneyText = new HUDText(new Vector2(-250,125), HUDElement.Anchor.MiddleScreen, font, tableCamera);
+        substractText = new HUDText(new Vector2(-250,100), HUDElement.Anchor.MiddleScreen, font, tableCamera);
+        resultText = new HUDText(new Vector2(-250,50), HUDElement.Anchor.MiddleScreen, font, tableCamera);
+        exitStartMonth = new HUDButton("ArrowLeft", new Vector2(-250,-50), HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.UseEvent, this, tableCamera);
+        exitStartMonth.setActive(false);
+        }
 
     public void ShowCards() {
         cardShowed = 0;
@@ -173,6 +192,7 @@ public class Level {
     }
 
     public void HideShowCards() {
+
         dice.setActive(true);
 
         for (int i = 0 ; i < mainButtons.size(); i++)
@@ -188,7 +208,9 @@ public class Level {
     public void UseEvent()
     {
         usingEvent = true;
-        players.get(currentPlayerIndex).events.get(eventShowed);
+
+        players.get(playerObjective).events.get(eventShowed).Use
+                (players.get(currentPlayerIndex),players.get(playerObjective));
     }
 
     public void update(float delta) {
@@ -229,7 +251,23 @@ public class Level {
                             int nextSquare = players.get(currentPlayerIndex).currentSquare + 1;
                             nextSquare %= tableSquares.size();
 
-                            players.get(currentPlayerIndex).MoveTo(tableSquares.get(nextSquare).position);
+                            Gdx.app.debug("Square", nextSquare + "" +tableSquares.get(nextSquare).type);
+                            if (tableSquares.get(nextSquare).type == Constants.SquareType.StartMonth)
+                            {
+
+                                if (!endStartMonth)
+                                {
+                                    StartMonth();
+                                }
+                                else
+                                {
+                                    ExitStartMonth();
+                                }
+                            }
+                            else
+                            {
+                                players.get(currentPlayerIndex).MoveTo(tableSquares.get(nextSquare).position);
+                            }
                         }
                         else
                         {
@@ -238,6 +276,7 @@ public class Level {
                     }
                     else if (movement == 0)
                     {
+                        players.get(currentPlayerIndex).currentSquare %= tableSquares.size();
                         CardUpdate();
                     }
                 }
@@ -251,17 +290,17 @@ public class Level {
         }
         else
         {
-            if(Gdx.input.justTouched())
+            if (Gdx.input.justTouched())
             {
                 Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0.0f);
                 Vector3 worldPosition = tableCamera.orthographicCamera.unproject(mousePosition);
                 Vector2 position = new Vector2(worldPosition.x, worldPosition.y);
 
-                if(players.size() < 4 && addPlayerButton.checkClicked(position))
+                if (players.size() < 4 && addPlayerButton.checkClicked(position))
                 {
                     addPlayer();
                 }
-                if(players.size() >= 2 && startButton.checkClicked(position))
+                if (players.size() >= 2 && startButton.checkClicked(position))
                 {
                     startGame();
                 }
@@ -269,14 +308,68 @@ public class Level {
         }
     }
 
-    public void addPlayer()
+    void StartMonth()
     {
-        if(players.size() < 4)
+        int mailAmount = 0;
+        int bargainAmount = 0;
+
+        for (int i = 0; i < players.get(currentPlayerIndex).bargains.size(); i++)
+        {
+            bargainAmount += players.get(currentPlayerIndex).bargains.get(i).sellAmount;
+        }
+        for (int i = 0; i < players.get(currentPlayerIndex).mailCards.size(); i++)
+        {
+            mailAmount += players.get(currentPlayerIndex).mailCards.get(i).amount;
+        }
+
+        //Display bargain
+
+        mailMoneyText.setText("Mails:   - " + mailAmount);
+        mailMoneyText.setActive(true);
+        bargainMoneyText.setText("Bargains:   + " + bargainAmount);
+        bargainMoneyText.setActive(true);
+        currentMoneyText.setText("My Money:   " + players.get(currentPlayerIndex).money);
+        currentMoneyText.setActive(true);
+        substractText.setText("              " + (bargainAmount - mailAmount));
+        substractText.setActive(true);
+        resultText.setText("             " + players.get(currentPlayerIndex).money + (bargainAmount - mailAmount));
+        resultText.setActive(true);
+
+        exitStartMonth.setActive(true);
+
+        players.get(currentPlayerIndex).money -= mailAmount;
+
+        if (players.get(currentPlayerIndex).money < 0)
+        {
+            Gdx.app.debug("Player" + currentPlayerIndex + 1, "has been defeated");
+        }
+        //Turn end
+
+        players.get(currentPlayerIndex).money += (bargainAmount - mailAmount);
+        players.get(currentPlayerIndex).bargains.clear();
+        players.get(currentPlayerIndex).mailCards.clear();
+    }
+
+    public void ExitStartMonth()
+    {
+        mailMoneyText.setActive(false);
+        bargainMoneyText.setActive(false);
+        currentMoneyText.setActive(false);
+        substractText.setActive(false);
+        resultText.setActive(false);
+
+        exitStartMonth.setActive(false);
+    }
+
+    public void addPlayer() {
+
+        if (players.size() < 4)
         {
             players.add(new Player(players.size() + 1, initialMoney,new Vector2(map.getRegionWidth() + Constants.EXTRA_HUD/2,
                     ( (players.size() + 1) * tableCamera.viewportHeight/5)), tableSquares.get(0).position, this));
         }
     }
+
     public void DiceEnd() {
 
         dice.setActive(false);
@@ -292,6 +385,7 @@ public class Level {
     }
 
     private void CardUpdate() {
+
         switch (tableSquares.get(players.get(currentPlayerIndex).currentSquare).type)
         {
             case Mail:
@@ -354,31 +448,9 @@ public class Level {
 
             case StartMonth:
 
-                int mailAmount = 0;
-                int bargainAmount = 0;
-
-                for (int i = 0; i < players.get(currentPlayerIndex).bargains.size(); i++)
-                {
-                    bargainAmount += players.get(currentPlayerIndex).bargains.get(i).sellAmount;
-                }
-                for (int i = 0; i < players.get(currentPlayerIndex).mailCards.size(); i++)
-                {
-                    mailAmount += players.get(currentPlayerIndex).mailCards.get(i).amount;
-                }
-
-                //Display bargain
-
-
-
-                //
-                players.get(currentPlayerIndex).money -= mailAmount;
-
-                if (players.get(currentPlayerIndex).money < 0)
-                {
-                    Gdx.app.debug("Player" + currentPlayerIndex + 1, "has been defeated");
-                }
-
+                StartMonth();
                 TurnEnd();
+
                 break;
         }
     }
@@ -392,6 +464,7 @@ public class Level {
     }
 
     public void EndCardAnimation() {
+
         cardAnimation = false;
         turnEnded = true;
 
@@ -399,10 +472,12 @@ public class Level {
     }
 
     public void OnPlayerArrived() {
+
         movement--;
     }
 
     void ShowOptions() {
+
         dice.setActive(true);
         dice.Reset();
 
@@ -443,6 +518,13 @@ public class Level {
         }
 
         dice.render(batch);
+
+        exitStartMonth.render(batch);
+        mailMoneyText.render(batch);
+        bargainMoneyText.render(batch);
+        currentMoneyText.render(batch);
+        substractText.render(batch);
+        resultText.render(batch);
 
         if(!gameStarted)
         {

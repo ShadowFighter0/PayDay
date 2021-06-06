@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class HUDButton extends HUDElement{
 
-    enum ButtonType {Quit, ShowEvents, EventLeft, EventRight, UseEvent, ExitShowEvents, ShowCards, MailLeft, MailRight, ExitShowCard}
+    enum ButtonType {Quit, ShowEvents, EventLeft, EventRight, UseEvent, ExitShowEvents, ShowCards, MailLeft, MailRight, EndStartMonth, ExitShowCard}
     ButtonType type;
 
     Level level;
@@ -132,6 +132,13 @@ public class HUDButton extends HUDElement{
 
 
                 //endregion
+
+                case EndStartMonth:
+
+                    level.endStartMonth = true;
+                    break;
+
+
                 case Quit:
                     Gdx.app.exit();
                     break;
