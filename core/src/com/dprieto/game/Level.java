@@ -27,6 +27,10 @@ public class Level {
     ArrayList<HUDButton> eventsButtons;
     ArrayList<HUDButton> mainButtons;
     ArrayList<HUDText> mainTexts;
+
+    ArrayList<HUDButton> buyBargainsButtons;
+    ArrayList<HUDText> buyBargainsText;
+
     HUDText noCards;
     HUDText selectPlayerText;
 
@@ -61,10 +65,16 @@ public class Level {
     boolean endStartMonth = false;
     boolean disableStartMonth = false;
 
+    //Buy Bargain
+    boolean bargainShowed = false;
+    BargainCard bargainCard;
+
+    //Events
     int cardShowed = 0;
     int eventShowed = 0;
     int playerObjective = 0;
 
+    //Start Game
     HUDButton addPlayerButton;
     HUDButton startButton;
     private boolean gameStarted = false;
@@ -119,11 +129,22 @@ public class Level {
         mainTexts = new ArrayList<HUDText>();
         eventsButtons = new ArrayList<HUDButton>();
 
+        buyBargainsButtons = new ArrayList<HUDButton>();
+        buyBargainsText = new ArrayList<HUDText>();
+
         //Main Buttons
         mainButtons.add(new HUDButton("EventCard", new Vector2( -300,-50), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.ShowEvents, this, tableCamera));
         mainButtons.add(new HUDButton("MailCard", new Vector2( 20,-50), new Vector2( 0.5f, 0.5f),
                 HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.ShowCards, this, tableCamera));
+
+        buyBargainsButtons.add(new HUDButton("ArrowRight", new Vector2( 150,-300), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.BuyBargain, this, tableCamera));
+        buyBargainsButtons.add(new HUDButton("ArrowLeft", new Vector2( -475,-300), new Vector2( 0.5f, 0.5f),
+                HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.NotBuyBargain, this, tableCamera));
+
+        buyBargainsButtons.get(0).setActive(false);
+        buyBargainsButtons.get(1).setActive(false);
 
         mainTexts.add(new HUDText(new Vector2(-350, -100), HUDElement.Anchor.MiddleScreen, font, tableCamera));
         mainTexts.get(0).setText("Events");
@@ -131,6 +152,16 @@ public class Level {
         mainTexts.get(1).setText("My Cards");
         mainTexts.add(new HUDText(new Vector2(-170, 130), HUDElement.Anchor.MiddleScreen, font, tableCamera));
         mainTexts.get(2).setText("Dice");
+
+        buyBargainsText.add(new HUDText(new Vector2(-350,-300),HUDElement.Anchor.MiddleScreen, font, tableCamera));
+        buyBargainsText.get(0).setText("Not Buy");
+        buyBargainsText.get(0).setActive(false);
+        buyBargainsText.add(new HUDText(new Vector2(75,-300),HUDElement.Anchor.MiddleScreen, font, tableCamera));
+        buyBargainsText.get(1).setText("Buy");
+        buyBargainsText.get(1).setActive(false);
+        buyBargainsText.add(new HUDText(new Vector2(-150,300),HUDElement.Anchor.MiddleScreen, font, tableCamera));
+        buyBargainsText.get(2).setText("Do you want to buy this bargain?");
+        buyBargainsText.get(2).setActive(false);
 
         noCards = new HUDText(new Vector2(-170, 0), HUDElement.Anchor.MiddleScreen, font, cardsCamera );
 
@@ -188,6 +219,39 @@ public class Level {
         {
             mainTexts.get(i).setActive(false);
         }
+    }
+
+    public void BuyBargain (boolean buy)
+    {
+        if (buy)
+        {
+            if (players.get(currentPlayerIndex).mustGiveBargain)
+            {
+                players.get(currentPlayerIndex).playerToGiveBargain.bargains.add(bargainCard);
+                players.get(currentPlayerIndex).mustGiveBargain = false;
+                players.get(currentPlayerIndex).playerToGiveBargain = null;
+            }
+            else
+            {
+                players.get(currentPlayerIndex).bargains.add(bargainCard);
+            }
+
+            players.get(currentPlayerIndex).money -= bargainCard.buyAmount;
+        }
+
+        //Enable buttons and texts
+        for (int i = 0; i < buyBargainsButtons.size(); i++)
+        {
+            buyBargainsButtons.get(i).setActive(false);
+        }
+        for (int i = 0; i < buyBargainsText.size(); i++)
+        {
+            buyBargainsText.get(i).setActive(false);
+        }
+
+        EndCardAnimation();
+
+        bargainShowed = false;
     }
 
     public void HideShowCards() {
@@ -475,22 +539,25 @@ public class Level {
 
 
             case Bargain:
-                BargainCard bargainCard = bargainCards.remove(0);
 
-                if (players.get(currentPlayerIndex).mustGiveBargain)
+                if (!bargainShowed)
                 {
-                    players.get(currentPlayerIndex).playerToGiveBargain.bargains.add(bargainCard);
-                    players.get(currentPlayerIndex).mustGiveBargain = false;
-                    players.get(currentPlayerIndex).playerToGiveBargain = null;
-                }
-                else
-                {
-                    players.get(currentPlayerIndex).bargains.add(bargainCard);
-                }
-                bargainCards.add(bargainCard);
+                    bargainShowed = true;
+                    bargainCard = bargainCards.remove(0);
+                    bargainCards.add(bargainCard);
+                    cardToDisplay = bargainCard;
+                    cardAnimation = true;
 
-                cardToDisplay = bargainCard;
-                cardAnimation = true;
+                    //Enable buttons and texts
+                    for (int i = 0; i < buyBargainsButtons.size(); i++)
+                    {
+                        buyBargainsButtons.get(i).setActive(true);
+                    }
+                    for (int i = 0; i < buyBargainsText.size(); i++)
+                    {
+                        buyBargainsText.get(i).setActive(true);
+                    }
+                }
                 break;
 
 
@@ -502,13 +569,12 @@ public class Level {
                     }
                 }
                 int rand = MathUtils.random(0, players.size() - 1);
-                players.get(rand).money += 100 * (players.size() - 1);
+                players.get(rand).money += 100 * (players.size());
 
-                lotteryCard.setDescription("El jugador " + (rand + 1) + " ha ganado " + (100 * (players.size() - 1)) + "!");
+                lotteryCard.setDescription("El jugador " + (rand + 1) + " ha ganado " + (100 * (players.size())) + "!");
                 cardToDisplay = lotteryCard;
                 cardAnimation = true;
 
-                //TurnEnd();
                 break;
 
 
@@ -563,6 +629,11 @@ public class Level {
 
         board.render(batch);
 
+        for(int i = 0; i < tableSquares.size(); i++)
+        {
+            tableSquares.get(i).render(batch,font);
+        }
+
         for (int i = 0; i < players.size(); i++)
         {
             players.get(i).render(batch);
@@ -576,6 +647,15 @@ public class Level {
         for (int i = 0; i < mainTexts.size(); i++)
         {
             mainTexts.get(i).render(batch);
+        }
+
+        for (int i = 0; i < buyBargainsText.size(); i++)
+        {
+            buyBargainsText.get(i).render(batch);
+        }
+        for (int i = 0; i < buyBargainsButtons.size(); i++)
+        {
+            buyBargainsButtons.get(i).render(batch);
         }
 
         if (cardAnimation)

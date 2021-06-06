@@ -52,7 +52,7 @@ public class Board {
 
     public void getBoxesInformation()
     {
-        for (int i = boxes.getCount() - 1; i > 0; i--)
+        for (int i = boxes.getCount() - 1; i >= 0; i--)
         {
 
             Gdx.app.debug("Square", "" + boxes.get(i).getName());

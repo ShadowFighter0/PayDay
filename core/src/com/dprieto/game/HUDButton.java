@@ -7,7 +7,9 @@ import com.badlogic.gdx.math.Vector2;
 
 public class HUDButton extends HUDElement{
 
-    enum ButtonType {Quit, ShowEvents, EventLeft, EventRight, UseEvent, ExitShowEvents, ShowCards, MailLeft, MailRight, EndStartMonth, ExitShowCard}
+    enum ButtonType {Quit, ShowEvents, EventLeft, EventRight, UseEvent, ExitShowEvents,
+        ShowCards, MailLeft, MailRight, EndStartMonth, ExitShowCard,
+        BuyBargain, NotBuyBargain}
     ButtonType type;
 
     Level level;
@@ -137,6 +139,14 @@ public class HUDButton extends HUDElement{
 
 
                 //endregion
+
+                case BuyBargain:
+                    level.BuyBargain(true);
+                    break;
+
+                case NotBuyBargain:
+                    level.BuyBargain(false);
+                    break;
 
                 case EndStartMonth:
 
