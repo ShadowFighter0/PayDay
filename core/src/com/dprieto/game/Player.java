@@ -11,6 +11,8 @@ public class Player extends GameObject{
 
     Level level;
 
+    boolean firstMovement = true;
+
     int numPlayer;
     int money;
     int currentSquare;

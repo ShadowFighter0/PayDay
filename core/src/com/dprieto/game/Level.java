@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 
 public class Level {
 
-    //cameras
+    //Cameras
     Camera tableCamera;
     Camera cardsCamera;
 
@@ -72,6 +71,7 @@ public class Level {
 
     LotteryCard lotteryCard = null;
     private int initialMoney = 0;
+
     public Level (int initialMoney)
     {
         tableSquares = new ArrayList<TableSquare>();
@@ -94,17 +94,12 @@ public class Level {
 
         //Create Players
         this.initialMoney = initialMoney;
-//        for (int i = 1; i <= playersNum; i++)
-//        {
-//            players.add(new Player(i, initialMoney,new Vector2(map.getRegionWidth() + Constants.EXTRA_HUD/2, ( i * tableCamera.viewportHeight/5)), tableSquares.get(0).position, this));
-//        }
-
         lotteryCard = new LotteryCard(this);
     }
 
     private void startGame()
     {
-        if(players.size() >= 2)
+        if (players.size() >= 2)
         {
             players.get(currentPlayerIndex).Turn(true);
             gameStarted = true;
@@ -171,8 +166,8 @@ public class Level {
         mailMoneyText = new HUDText(new Vector2(-250,250), HUDElement.Anchor.MiddleScreen, font, tableCamera);
         bargainMoneyText = new HUDText(new Vector2(-250,200), HUDElement.Anchor.MiddleScreen, font, tableCamera);
         currentMoneyText = new HUDText(new Vector2(-250,125), HUDElement.Anchor.MiddleScreen, font, tableCamera);
-        substractText = new HUDText(new Vector2(-250,100), HUDElement.Anchor.MiddleScreen, font, tableCamera);
-        resultText = new HUDText(new Vector2(-250,50), HUDElement.Anchor.MiddleScreen, font, tableCamera);
+        substractText = new HUDText(new Vector2(-250,75), HUDElement.Anchor.MiddleScreen, font, tableCamera);
+        resultText = new HUDText(new Vector2(-250,0), HUDElement.Anchor.MiddleScreen, font, tableCamera);
         exitStartMonth = new HUDButton("ArrowLeft", new Vector2(-250,-100), HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.EndStartMonth, this, tableCamera);
         exitStartMonth.setActive(false);
     }
@@ -212,38 +207,45 @@ public class Level {
     public void UseEvent()
     {
         usingEvent = true;
-        selectPlayerText.setActive(true);
-        selectPlayerText.setText("Select a Player");
-
-        EventCard event = players.get(currentPlayerIndex).events.get(eventShowed);
-
-        switch (event.type)
-        {
-            case EarnMoney:
-
-                event.Use(players.get(currentPlayerIndex), null);
-                break;
-
-            case PlayersEarnMoney:
-            case PlayerLoseMoney:
-            case StealBargain:
-
-                selectPlayerText.setActive(true);
-                selectPlayerText.setText("Please select a player");
-
-                if (playerObjective > 0)
-                {
-                    event.Use(players.get(currentPlayerIndex), players.get(playerObjective));
-                }
-                break;
-        }
-
-        players.get(currentPlayerIndex).events.remove(eventShowed);
+        eventShowed = 0;
     }
 
     public void update(float delta) {
 
-        if (gameStarted)
+        if (usingEvent)
+        {
+            selectPlayerText.setActive(true);
+            selectPlayerText.setText("Select a Player");
+
+            EventCard event = players.get(currentPlayerIndex).events.get(eventShowed);
+
+            switch (event.type)
+            {
+                case EarnMoney:
+
+                    event.Use(players.get(currentPlayerIndex), null);
+                    players.get(currentPlayerIndex).events.remove(eventShowed);
+                    usingEvent = false;
+                    break;
+
+                case PlayersEarnMoney:
+                case PlayerLoseMoney:
+                case StealBargain:
+
+                    selectPlayerText.setActive(true);
+                    selectPlayerText.setText("Please select a player");
+
+                    if (playerObjective > 0)
+                    {
+                        event.Use(players.get(currentPlayerIndex), players.get(playerObjective));
+                        players.get(currentPlayerIndex).events.remove(eventShowed);
+                        usingEvent = false;
+                        playerObjective = -1;
+                    }
+                    break;
+            }
+        }
+        else if (gameStarted)
         {
             if (!cardAnimation)
             {
@@ -314,9 +316,18 @@ public class Level {
         //Move Lerped to next square
         if (!players.get(currentPlayerIndex).inMovement)
         {
-            if (tableSquares.get(players.get(currentPlayerIndex).currentSquare).type == Constants.SquareType.StartMonth && !endStartMonth && !disableStartMonth)
+            players.get(currentPlayerIndex).currentSquare %= tableSquares.size();
+            if (tableSquares.get(players.get(currentPlayerIndex).currentSquare).type == Constants.SquareType.Start && !endStartMonth && !disableStartMonth)
             {
-                StartMonth();
+                if (players.get(currentPlayerIndex).firstMovement)
+                {
+                    ExitStartMonth();
+                    players.get(currentPlayerIndex).firstMovement = false;
+                }
+                else
+                {
+                    StartMonth();
+                }
             }
             else if (endStartMonth && !disableStartMonth)
             {
@@ -324,6 +335,9 @@ public class Level {
             }
             else
             {
+                endStartMonth = false;
+                disableStartMonth = false;
+
                 int nextSquare = players.get(currentPlayerIndex).currentSquare + 1;
                 nextSquare %= tableSquares.size();
 
@@ -494,7 +508,7 @@ public class Level {
                 break;
 
 
-            case StartMonth:
+            case Start:
 
                 StartMonth();
                 TurnEnd();

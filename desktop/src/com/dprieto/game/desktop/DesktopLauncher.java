@@ -10,6 +10,11 @@ public class DesktopLauncher {
 
 		config.forceExit = false;
 
+		config.width = LwjglApplicationConfiguration.getDesktopDisplayMode().width;
+		config.height = LwjglApplicationConfiguration.getDesktopDisplayMode().height;
+
+		//config.fullscreen = true;
+
 		new LwjglApplication(new PayDay(), config);
 	}
 }

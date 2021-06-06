@@ -12,7 +12,7 @@ public class Constants {
 
 
     enum EventType {EarnMoney, PlayersEarnMoney, PlayerLoseMoney, StealBargain }
-    enum SquareType {Mail, Event, Lottery, Bargain, StartMonth}
+    enum SquareType {Mail, Event, Lottery, Bargain, Start}
 
 
     Constants() {
