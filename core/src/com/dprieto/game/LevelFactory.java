@@ -35,7 +35,11 @@ public class LevelFactory {
                 //Main Menu cuantos jugadores van a jugar?
             case 1:
 
+<<<<<<< Updated upstream
                 // Board gameMap = new Board();
+=======
+                //Board gameMap = new Board();
+>>>>>>> Stashed changes
 
                 ArrayList<TableSquare> squares = new ArrayList<TableSquare>();
 
