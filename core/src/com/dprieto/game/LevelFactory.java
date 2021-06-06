@@ -1,6 +1,10 @@
 package com.dprieto.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -30,6 +34,9 @@ public class LevelFactory {
             case 0:
                 //Main Menu cuantos jugadores van a jugar?
             case 1:
+
+                Board gameMap = new Board();
+
                 ArrayList<TableSquare> squares = new ArrayList<TableSquare>();
 
                 squares.add(new TableSquare(Constants.SquareType.StartMonth, new Vector2(100, 100)));

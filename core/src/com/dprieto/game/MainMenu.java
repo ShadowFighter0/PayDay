@@ -35,7 +35,7 @@ public class MainMenu implements Screen {
     };
     quit = new HUDButton("button", new Vector2(0, 0), HUDElement.Anchor.MiddleScreen, this.camera, "QUIT", font){
       @Override
-      public void OnClicked() {
+      public void OnClicked(){
         Gdx.app.exit();
       }
     };
