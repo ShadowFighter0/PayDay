@@ -37,8 +37,6 @@ public class InputManagerDesktop implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button)
     {
-        boolean clicked = false;
-
         screenPoint.x = screenX;
         screenPoint.y = screenY;
 
@@ -49,31 +47,26 @@ public class InputManagerDesktop implements InputProcessor {
 
         for ( int i = 0; i < level.cardsButtons.size(); i++)
         {
-            if(!clicked)
-            {
-                clicked = level.cardsButtons.get(i).checkClicked(point);
-            }
+            level.cardsButtons.get(i).checkClicked(point);
         }
 
         for (int i = 0; i < level.eventsButtons.size(); i++)
         {
-            if(!clicked)
-            {
-                clicked = level.eventsButtons.get(i).checkClicked(point);
-            }
+            level.eventsButtons.get(i).checkClicked(point);
         }
 
         Vector3 pos = level.tableCamera.orthographicCamera.unproject(new Vector3(screenX,screenY,0));
+        point.x = pos.x;
+        point.y = pos.y;
 
 
         if (level.dice.isActive())
         {
-            clicked = level.dice.checkClicked(point);
+             level.dice.checkClicked(point);
 
             for (int i = 0; i < level.mainButtons.size(); i++)
             {
-
-                    clicked = level.mainButtons.get(i).checkClicked(point);
+                level.mainButtons.get(i).checkClicked(point);
             }
         }
 

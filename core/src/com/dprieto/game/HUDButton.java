@@ -150,7 +150,7 @@ public class HUDButton extends HUDElement{
 
                 case EndStartMonth:
 
-                    level.endStartMonth = true;
+                    level.ExitStartMonth();
                     break;
 
 

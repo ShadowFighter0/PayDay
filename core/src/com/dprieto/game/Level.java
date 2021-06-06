@@ -199,7 +199,7 @@ public class Level {
         currentMoneyText = new HUDText(new Vector2(-250,100), HUDElement.Anchor.MiddleScreen, font, tableCamera);
         substractText = new HUDText(new Vector2(-250,50), HUDElement.Anchor.MiddleScreen, font, tableCamera);
         resultText = new HUDText(new Vector2(-250,-25), HUDElement.Anchor.MiddleScreen, font, tableCamera);
-        exitStartMonth = new HUDButton("ArrowLeft", new Vector2(-250,-100), HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.EndStartMonth, this, tableCamera);
+        exitStartMonth = new HUDButton("ArrowLeft", new Vector2(-350,-200), HUDElement.Anchor.MiddleScreen, HUDButton.ButtonType.EndStartMonth, this, tableCamera);
         exitStartMonth.setActive(false);
     }
 
@@ -375,26 +375,22 @@ public class Level {
         if (!players.get(currentPlayerIndex).inMovement)
         {
             players.get(currentPlayerIndex).currentSquare %= tableSquares.size();
-            if (tableSquares.get(players.get(currentPlayerIndex).currentSquare).type == Constants.SquareType.Start && !endStartMonth && !disableStartMonth)
+
+            if (tableSquares.get(players.get(currentPlayerIndex).currentSquare).type == Constants.SquareType.Start && !endStartMonth)
             {
                 if (players.get(currentPlayerIndex).firstMovement)
                 {
-                    ExitStartMonth();
                     players.get(currentPlayerIndex).firstMovement = false;
+                    endStartMonth = true;
                 }
                 else
                 {
                     StartMonth();
                 }
             }
-            else if (endStartMonth && !disableStartMonth)
-            {
-                ExitStartMonth();
-            }
             else
             {
                 endStartMonth = false;
-                disableStartMonth = false;
 
                 int nextSquare = players.get(currentPlayerIndex).currentSquare + 1;
                 nextSquare %= tableSquares.size();
@@ -435,9 +431,8 @@ public class Level {
         substractText.setText("              " + (bargainAmount + mailAmount));
         substractText.setActive(true);
 
-        players.get(currentPlayerIndex).money += (bargainAmount + mailAmount);
-
-        resultText.setText("             " +  players.get(currentPlayerIndex).money);
+        int aux = players.get(currentPlayerIndex).money + (bargainAmount + mailAmount);
+        resultText.setText("             " +  aux);
         resultText.setActive(true);
 
         exitStartMonth.setActive(true);
@@ -475,8 +470,7 @@ public class Level {
 
         exitStartMonth.setActive(false);
 
-        endStartMonth = false;
-        disableStartMonth = true;
+        endStartMonth = true;
     }
 
     public void addPlayer() {
@@ -565,17 +559,7 @@ public class Level {
 
                 break;
 
-
             case Start:
-
-                if(!endStartMonth && !disableStartMonth)
-                {
-                    StartMonth();
-                }
-                else
-                {
-                    ExitStartMonth();
-                }
 
                 TurnEnd();
 
