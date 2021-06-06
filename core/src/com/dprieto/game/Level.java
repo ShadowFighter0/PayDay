@@ -1,5 +1,6 @@
 package com.dprieto.game;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -239,7 +240,7 @@ public class Level {
             players.get(currentPlayerIndex).money += bargainCard.buyAmount;
         }
 
-        EndCardAnimation();
+        EndCardAnimation(false);
     }
 
     public void HideShowCards() {
@@ -457,9 +458,14 @@ public class Level {
         players.get(currentPlayerIndex).bargains.clear();
         players.get(currentPlayerIndex).mailCards.clear();
 
+        if(players.size() == 1)
+        {
+            System.out.println("win");
+        }
         if (players.get(currentPlayerIndex).money < 0)
         {
             Gdx.app.debug("Player" + currentPlayerIndex + 1, "has been defeated");
+            EndCardAnimation(true);
         }
 
         mailMoneyText.setActive(false);
@@ -471,6 +477,7 @@ public class Level {
         exitStartMonth.setActive(false);
 
         endStartMonth = true;
+
     }
 
     public void addPlayer() {
@@ -544,16 +551,18 @@ public class Level {
 
 
             case Lottery:
+                int totalAmount = 0;
                 for (int i = 0; i < players.size(); i++) {
                     if(!players.get(i).equals(currentPlayerIndex) && players.get(i).money >= 100)
                     {
                         players.get(i).money -= 100;
+                        totalAmount += 100;
                     }
                 }
                 int rand = MathUtils.random(0, players.size() - 1);
-                players.get(rand).money += 100 * (players.size());
+                players.get(rand).money += totalAmount;
 
-                lotteryCard.setDescription("El jugador " + (rand + 1) + " ha ganado " + (100 * (players.size())) + "!");
+                lotteryCard.setDescription("El jugador " + (rand + 1) + " ha ganado " + totalAmount + "!");
                 cardToDisplay = lotteryCard;
                 cardAnimation = true;
 
@@ -561,21 +570,36 @@ public class Level {
 
             case Start:
 
-                EndCardAnimation();
+                EndCardAnimation(false);
 
                 break;
         }
     }
 
-    void TurnEnd() {
+    void TurnEnd(boolean kill) {
 
         players.get(currentPlayerIndex).Turn(false);
-        currentPlayerIndex++;
-        currentPlayerIndex %= players.size();
+
+        if(kill)
+        {
+            players.remove(currentPlayerIndex);
+            movement = 0;
+            if(players.size() == 1)
+            {
+                PayDay.instance.setScreen(new MainMenu());
+                return;
+            }
+        }
+        else
+        {
+            currentPlayerIndex++;
+            currentPlayerIndex %= players.size();
+        }
+
         players.get(currentPlayerIndex).Turn(true);
     }
 
-    public void EndCardAnimation() {
+    public void EndCardAnimation(boolean kill) {
 
         //Enable buttons and texts
         for (int i = 0; i < buyBargainsButtons.size(); i++)
@@ -593,7 +617,7 @@ public class Level {
         cardAnimation = false;
         turnEnded = true;
 
-        TurnEnd();
+        TurnEnd(kill);
     }
 
     public void OnPlayerArrived() {

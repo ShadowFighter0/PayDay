@@ -41,7 +41,7 @@ public class Card extends GameObject{
         if (currentSecsUntilTurnOff <= 0)
         {
             currentSecsUntilTurnOff = secsUntilTurnOf;
-            level.EndCardAnimation();
+            level.EndCardAnimation(false);
         }
         else
         {
@@ -75,7 +75,7 @@ public class Card extends GameObject{
     @Override
     public void OnClicked() {
 
-        level.EndCardAnimation();
+        level.EndCardAnimation(false);
     }
 
     @Override
