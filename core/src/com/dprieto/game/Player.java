@@ -94,7 +94,6 @@ public class Player extends GameObject{
     {
         mustGiveBargain = true;
         playerToGiveBargain = giveTo;
-
     }
 
     @Override
@@ -133,7 +132,10 @@ public class Player extends GameObject{
     @Override
     public void OnClicked() {
 
-        level.playerObjective = numPlayer - 1;
+        if(numPlayer - 1 != level.currentPlayerIndex)
+        {
+            level.playerObjective = numPlayer - 1;
+        }
     }
 
     @Override

@@ -32,12 +32,14 @@ public class MainMenu implements Screen {
         PayDay.instance.setScreen(new GameScreen());
       }
     };
+
     quit = new HUDButton("button", new Vector2(0, 0), HUDElement.Anchor.MiddleScreen, this.camera, "QUIT", font){
       @Override
       public void OnClicked(){
         Gdx.app.exit();
       }
     };
+
     title = new HUDText(new Vector2(0, 200), HUDElement.Anchor.MiddleScreen, font, camera);
     title.setText("PAY DAY");
   }

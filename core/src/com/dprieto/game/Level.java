@@ -292,7 +292,7 @@ public class Level {
                     selectPlayerText.setActive(true);
                     selectPlayerText.setText("Please select a player");
 
-                    if (playerObjective > 0 && !players.get(playerObjective).equals(players.get(currentPlayerIndex)))
+                    if (playerObjective > 0)
                     {
                         event.Use(players.get(currentPlayerIndex), players.get(playerObjective));
                         players.get(currentPlayerIndex).events.remove(eventShowed);
