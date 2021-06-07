@@ -21,17 +21,60 @@ public class GestureListener implements GestureDetector.GestureListener {
 
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
-        Vector3 pos = level.tableCamera.orthographicCamera.unproject(new Vector3(x,y,0));
-
         screenPoint.x = x;
         screenPoint.y = y;
 
+        Vector3 position = level.cardsCamera.orthographicCamera.unproject(new Vector3(x, y, 0));
+        point.x = position.x;
+        point.y = position.y;
+
+
+        for ( int i = 0; i < level.cardsButtons.size(); i++)
+        {
+            level.cardsButtons.get(i).checkClicked(point);
+        }
+
+        for (int i = 0; i < level.eventsButtons.size(); i++)
+        {
+            level.eventsButtons.get(i).checkClicked(point);
+        }
+
+        Vector3 pos = level.tableCamera.orthographicCamera.unproject(new Vector3(x,y,0));
         point.x = pos.x;
         point.y = pos.y;
 
-        boolean clicked = false;
 
+        if (level.dice.isActive() && level.gameStarted)
+        {
+            level.dice.checkClicked(point);
 
+            for (int i = 0; i < level.mainButtons.size(); i++)
+            {
+                level.mainButtons.get(i).checkClicked(point);
+            }
+        }
+
+        for(int i = 0; i < level.buyBargainsButtons.size(); i++)
+        {
+            level.buyBargainsButtons.get(i).checkClicked(point);
+        }
+
+        if (level.usingEvent)
+        {
+            for (int i = 0; i < level.players.size(); i++)
+            {
+                level.players.get(i).checkClicked(point);
+            }
+        }
+
+        if (level.exitStartMonth.isActive)
+        {
+            level.exitStartMonth.checkClicked(point);
+        }
+        if (level.cardAnimation)
+        {
+            level.cardToDisplay.checkClicked(point);
+        }
         return false;
     }
 
@@ -53,12 +96,6 @@ public class GestureListener implements GestureDetector.GestureListener {
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
 
-        float cameraMovementX = x - screenPoint.x;
-        float cameraMovementY = y - screenPoint.y;
-
-        level.tableCamera.moveCamera(- cameraMovementX * Constants.PAN_MOBILE_SENSITIVITY, cameraMovementY * Constants.PAN_MOBILE_SENSITIVITY);
-        screenPoint.x = x;
-        screenPoint.y = y;
         return false;
     }
 
@@ -71,9 +108,6 @@ public class GestureListener implements GestureDetector.GestureListener {
     @Override
     public boolean zoom(float initialDistance, float distance) {
 
-        float changeDistance = initialDistance - distance;
-        changeDistance *= Constants.ZOOM_MOBILE_SENSITIVITY * level.tableCamera.currentZoom;
-        level.tableCamera.changeZoom(changeDistance);
         return false;
     }
 

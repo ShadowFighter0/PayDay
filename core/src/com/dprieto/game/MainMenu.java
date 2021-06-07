@@ -29,7 +29,6 @@ public class MainMenu implements Screen {
     start = new HUDButton("button", new Vector2(0, 100), HUDElement.Anchor.MiddleScreen, this.camera, "START", font){
       @Override
       public void OnClicked() {
-        Gdx.app.log("asd", "asdasds");
         PayDay.instance.setScreen(new GameScreen());
       }
     };
@@ -73,7 +72,7 @@ public class MainMenu implements Screen {
 
   @Override
   public void resize(int width, int height) {
-    camera.FitResize(width, height);
+    camera.ExpandResize(width, height);
   }
 
   @Override
