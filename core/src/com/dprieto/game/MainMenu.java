@@ -21,7 +21,7 @@ public class MainMenu implements Screen {
   public MainMenu()
   {
     batch = new SpriteBatch();
-    camera = new Camera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    camera = new Camera(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.5f);
 
     font = new BitmapFont();
     font.setColor(Color.WHITE);
