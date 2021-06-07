@@ -539,7 +539,8 @@ public class Level {
 
                     //Enable buttons and texts
                     buyBargainsText.get(0).setActive(true);
-                    if (players.get(currentPlayerIndex).money > bargainCard.buyAmount)
+
+                    if (players.get(currentPlayerIndex).money > Math.abs(bargainCard.buyAmount))
                     {
                         buyBargainsButtons.get(0).setActive(true);
                         buyBargainsText.get(1).setActive(true);
