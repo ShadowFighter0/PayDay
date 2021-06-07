@@ -562,7 +562,7 @@ public class Level {
                 int rand = MathUtils.random(0, players.size() - 1);
                 players.get(rand).money += totalAmount;
 
-                lotteryCard.setDescription("El jugador " + players.get(rand).nameText.text + " ha ganado " + totalAmount + "!");
+                lotteryCard.setDescription("" + players.get(rand).nameText.text + " has won " + totalAmount + "$!");
                 cardToDisplay = lotteryCard;
                 cardAnimation = true;
 
